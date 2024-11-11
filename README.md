@@ -1,7 +1,7 @@
 # 2024.2-T03-PortalGalt
 
 <div align="center">
-    <img src="Galt.png" style="width:30vw"/>
+    <img src="./frontend/public/assets/Galt.png" style="width:30vw"/>
 </div>
 
 Este repositório é destinado ao desenvolvimento do Portal Galt, um projeto voltado para aprimorar a comunicação entre a administração do cursinho Galt e seus alunos. O Galt é um cursinho preparatório que oferece aulas gratuitas de alta qualidade, focadas em ajudar alunos de baixa renda a se prepararem para o vestibular, promovendo acesso à educação e oportunidades de crescimento acadêmico.

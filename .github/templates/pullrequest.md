@@ -8,15 +8,15 @@ Para seguirmos um padrão e manter o desenvolvimento organizado, utilizaremos um
 
 - As tarefas destinadas a cada um ficarão disponíveis na aba Issues.
 
-- Para cada tarefa a ser realizada, crie uma nova branch a partir da branch develop, que utilizaremos como default durante todo o desenvolvimento.
+- Para cada tarefa a ser realizada, crie uma nova branch a partir da branch main, que utilizaremos como default durante todo o desenvolvimento.
 
 ### 1 - Criando uma branch para a tarefa
 
-Primeiro, estando na branch develop, sincronizamos a remota com a local:
+Primeiro, estando na branch main, sincronizamos a remota com a local:
 ```
-git pull origin develop
+git pull origin main
 ```
-Depois, criamos a nova branch a partir da develop, observe que utilizaremos o ID da tarefa(Issue) para identificar a branch. Siga sempre o formato a seguir, substituindo id e nome-da-issue pelos dados da tarefa no github:
+Depois, criamos a nova branch a partir da main, observe que utilizaremos o ID da tarefa(Issue) para identificar a branch. Siga sempre o formato a seguir, substituindo id e nome-da-issue pelos dados da tarefa no github:
 ```
 git checkout -b feature-#id/nome-da-issue
 ```
@@ -69,17 +69,17 @@ Após executar esse comando, espere o git retornar um link, que te direcionará 
 
 Na página do github, adicione algum reviwer para analisar seu pull request no canto superior direito, e então clique em 'open pull request'
 
-### Retornando para a develop
+### Retornando para a main
 
-Após seu pull request ser aceito e o merge ser realizado, no terminal, volte para a branch develop:
+Após seu pull request ser aceito e o merge ser realizado, no terminal, volte para a branch main:
 
 ```
-git checkout develop
+git checkout main
 ```
 Depois, atualize seu repositório local com as alterações que foram mergeadas:
 
 ```
-git pull origin develop
+git pull origin main
 ```
 
 

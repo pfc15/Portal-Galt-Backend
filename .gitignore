@@ -1,1 +1,5 @@
 ambiente/
+portalGalt/cadastro/__pycache__
+portalGalt/cadastro/migrations/__pycache__
+portalGalt/portalGalt/__pycache__
+portalGalt/db.sqlite3

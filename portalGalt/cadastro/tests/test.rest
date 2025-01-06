@@ -1,4 +1,4 @@
-POST http://localhost:8000/login
+POST http://localhost:8000/login/
 Content-Type: application/json
 
 {"username": "pfc", "password":"1234"}
@@ -12,7 +12,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/test-token
+GET http://localhost:8000/test-token/
 Content-Type: application/json
 
 {}

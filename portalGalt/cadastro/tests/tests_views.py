@@ -1,9 +1,9 @@
+from .test_setup import TestSetUp
 
-import pytest
 
-import cadastro.views
+class TestViews(TestSetUp):
 
-# Create your tests here.
-@pytest.mark.django_db
-def test_login() -> None:
-    pass
+    def test_user_cannot_register_with_not_data(self):
+        res = self.client.post(self.signup_url)
+        self.assertEqual(res.status_code, 400)
+

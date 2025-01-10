@@ -1,0 +1,19 @@
+POST http://localhost:8000/login/
+Content-Type: application/json
+
+{"username": "pfc", "password":"1234"}
+
+###
+
+POST http://localhost:8000/signup/
+Content-Type: application/json
+
+{"username": "pfc", "password":"1234", "email":"email@email.com"}
+
+###
+
+GET http://localhost:8000/test_token/
+Content-Type: application/json
+Authorization: Token ca4a495d7c7ea194135aee8ac15814e8bd86692a
+
+{}

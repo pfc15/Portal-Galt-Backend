@@ -5,13 +5,16 @@ import React from 'react';
 interface ButtonProps {
   svg?: string | null;
   text: string;
+  onClick?: () => void;
 }
 
-export default function ButtonGalt({ text, svg }: ButtonProps) {
+export default function ButtonGalt({ onClick, text, svg }: ButtonProps) {
   return (
     <button
+      onClick={onClick}
       className="mt-5 tracking-wide font-semibold bg-main_color text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
     >
+      
       {svg && (
         <svg
           className="w-6 h-6 -ml-2"

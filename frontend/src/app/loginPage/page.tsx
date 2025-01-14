@@ -26,7 +26,7 @@ export default function LoginPage() {
     };
 
 
-    fetch("http://localhost:8000/login", requestOptions).then(
+    fetch("http://localhost:8000/login/", requestOptions).then(
       response => {
         if (!response.ok){
           throw new Error('Network not ok')

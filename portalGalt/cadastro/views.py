@@ -1,17 +1,26 @@
-from django.shortcuts import render
+#rest framework
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-
-from .serializers import UserSerializer
-from rest_framework import status
-from rest_framework.authtoken.models import Token
-from django.contrib.auth.models import User
-
-from django.shortcuts import get_object_or_404
-
-from rest_framework.decorators import authentication_classes, permission_classes
 from rest_framework.authentication import SessionAuthentication, TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
+
+# serializer
+from .serializers import UserSerializer
+
+#models
+from django.contrib.auth.models import Group, User
+from rest_framework.authtoken.models import Token
+
+# django shortcurs
+from django.shortcuts import get_object_or_404
+
+#decorators
+from .decorators import allowed_roles
+from rest_framework.decorators import authentication_classes, permission_classes
+
+
 
 @api_view(['POST'])
 def login(request):
@@ -22,14 +31,21 @@ def login(request):
     serializer = UserSerializer(instance=user)
     return Response({"token":token.key, "user":serializer.data})
 
+
 @api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@allowed_roles(["Administrator"])
 def signup(request):
-    serializer = UserSerializer(data=request.data)
+    user_data = {"username":request.data["username"], "email":request.data["email"], "password":request.data["password"]}
+    serializer = UserSerializer(data=user_data)
     if serializer.is_valid():
         serializer.save()
         user = User.objects.get(username=request.data['username'])
         user.set_password(request.data['password'])
+        user.groups.add(Group.objects.get(name=request.data["role"]))
         user.save()
+        
+
         token = Token.objects.create(user=user)
         return Response({"token":token.key, "user":serializer.data})
 

@@ -29,7 +29,7 @@ class TestViews(TestSetUp):
         self.assertEqual(res.data["role"], data["role"])
 
 
-    def test_signup_user_cannot_register_with_not_data(self):
+    def test_signup_user_cannot_register_with_no_data(self):
         self.client.force_login(self.admin)
 
         new_header = self.header

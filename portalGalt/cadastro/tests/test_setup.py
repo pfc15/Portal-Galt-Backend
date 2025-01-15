@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 from django.urls import reverse
 from django.contrib.auth.models import Group, User
+from rest_framework.authtoken.models import Token
 
 
 class TestSetUp(APITestCase):
@@ -18,6 +19,13 @@ class TestSetUp(APITestCase):
         self.student, create = User.objects.get_or_create(username="test_user_student", email="teste@test.com", password="password")
         self.student.set_password("password")
         self.student.save()
+
+        self.token_admin = Token.objects.create(user=self.admin)
+        self.token_student = Token.objects.create(user=self.student)
+
+        self.header = {
+            'CONTENT_TYPE': 'application/json'
+        }
 
         self.user_data_not_exist = {
             "email": "email@email.com",

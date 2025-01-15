@@ -4,6 +4,9 @@ from django.contrib.auth.models import User, Group
 from django.test import TestCase
 import json
 
+# to run only one test linux/bash
+# python3 manage.py test cadastro.tests.tests_views.TestViews.TESTMETHOD
+
 
 class TestViews(TestSetUp):
 
@@ -12,7 +15,7 @@ class TestViews(TestSetUp):
         self.assertEqual(res.status_code, 400)
 
 
-    def test_login_sucefull(self):
+    def test_login_sucessfull(self):
 
         header = {
             'CONTENT_TYPE': 'application/json'
@@ -24,8 +27,20 @@ class TestViews(TestSetUp):
         self.assertEqual(res.data["user"]["username"], self.user_data_admin["username"])
         self.assertEqual(res.data["user"]["email"], self.user_data_admin["email"])
 
+    
+    def test_login_User_Not_exists(self):
+        
+        res = self.client.post(self.login_url, self.user_data_not_exist, **self.header)
+        self.assertEqual(res.status_code, 404)
+    
+    def test_login_worng_password(self):
+        data = self.user_data_admin
+        data["password"] = "not his password"
+        res = self.client.post(self.login_url, data, **self.header)
+        self.assertEqual(res.status_code, 401)
 
-        # Call the function that queries the User model
+   
+        
 
 
 

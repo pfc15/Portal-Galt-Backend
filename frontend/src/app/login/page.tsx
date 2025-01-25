@@ -1,10 +1,10 @@
 'use client';
 import ButtonGalt from "@/components/button";
 import InputGalt from "@/components/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 
-export default function LoginPage() {
+export default function login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -67,4 +67,4 @@ export default function LoginPage() {
       </div>
     </div>
   );
-}
+} 

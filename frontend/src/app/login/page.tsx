@@ -2,15 +2,16 @@
 import ButtonGalt from "@/components/button";
 import InputGalt from "@/components/input";
 import { useState } from "react";
+import cookie, { useCookies } from "react-cookie";
 
 
 export default function login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [cookie, setCookie] = useCookies(["token-auth"]); ;
 
-  function login(){
-    
+  function login() {
     const data = {
       username: email,
       password: password,
@@ -28,13 +29,16 @@ export default function login() {
 
     fetch("http://localhost:8000/login/", requestOptions).then(
       response => {
-        if (!response.ok){
+        if (!response.ok) {
           throw new Error('Network not ok')
         }
         return response.json()
       }
     ).then(data => {
-      console.log(data);
+      const expiryDate = new Date();
+      expiryDate.setMinutes(expiryDate.getMinutes() + 20160);
+      setCookie("token-auth", data["token"], { path: "/home", expires: expiryDate });
+      console.log("Cookie set:", cookie);
     })
   }
 
@@ -55,14 +59,14 @@ export default function login() {
               </div>
               <div className="mx-auto max-w-xs">
                 <InputGalt type="Email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                <InputGalt type="PassWord" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)}/>
-                <ButtonGalt text="Entrar" svg="user" onClick={login}/>
+                <InputGalt type="PassWord" placeholder="Senha" value={password} onChange={(e) => setPassword(e.target.value)} />
+                <ButtonGalt text="Entrar" svg="user" onClick={login} />
               </div>
             </div>
           </div>
         </div>
         <div className="flex-1 text-center hidden lg:flex">
-          <img src='../assets/imagemlogin.png'/>
+          <img src='../assets/imagemlogin.png' />
         </div>
       </div>
     </div>

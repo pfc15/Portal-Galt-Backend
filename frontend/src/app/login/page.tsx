@@ -1,15 +1,19 @@
 'use client';
 import ButtonGalt from "@/components/button";
 import InputGalt from "@/components/input";
+import { redirect } from "next/dist/server/api-utils";
 import { useState } from "react";
 import cookie, { useCookies } from "react-cookie";
+import { useRouter } from "next/navigation";
 
 
 export default function login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cookie, setCookie] = useCookies(["token-auth"]); ;
+  const [cookie, setCookie] = useCookies(["token_auth"]);
+  const router = useRouter();
+  
 
   function login() {
     const data = {
@@ -37,8 +41,9 @@ export default function login() {
     ).then(data => {
       const expiryDate = new Date();
       expiryDate.setMinutes(expiryDate.getMinutes() + 20160);
-      setCookie("token-auth", data["token"], { path: "/home", expires: expiryDate });
+      setCookie("token_auth", data["token"], { path: "/", expires: expiryDate});
       console.log("Cookie set:", cookie);
+      router.push("/home")
     })
   }
 

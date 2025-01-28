@@ -1,25 +1,15 @@
 POST http://localhost:8000/login/
 Content-Type: application/json
 
-{"username": "test_user_admin", "password":"password"}
+{"username": "admin", "password":"1234"}
 
 ###
 
 POST http://localhost:8000/signup/
 Content-Type: application/json
-Authorization: Token fad6fae02c750b9f06870fbf3eed0390638eb867
+Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
 
-{"username": "pfc", "password":"1234", "email":"email@email.com", "role":"student"}
-
-###
-# super user, 
-# if not created run: python3 manage.py createsuperuser
-# enter localhost:8000/admin and login to superuser to set roles munaly
-
-POST http://localhost:8000/login/
-Content-Type: application/json
-
-{"username":"admin", "password":"1234"}
+{"username": "pfc", "password":"1234", "email":"email@email.com"}
 
 ###
 

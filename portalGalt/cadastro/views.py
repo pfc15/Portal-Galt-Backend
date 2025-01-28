@@ -25,11 +25,12 @@ from rest_framework.decorators import authentication_classes, permission_classes
 @api_view(['POST'])
 def login(request):
     user = get_object_or_404(User, username=request.data["username"])
+    print(f'username: {request.data["username"]}; password: {request.data['password']}')
     if not user.check_password(request.data['password']):
         return Response({"detail": "wrong username or password"}, status=status.HTTP_401_UNAUTHORIZED)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
-    return Response({"token":token.key, "user":serializer.data})
+    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data})
 
 
 @api_view(['POST'])

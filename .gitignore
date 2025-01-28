@@ -4,6 +4,5 @@ portalGalt/cadastro/management/commands/__pycache__
 portalGalt/cadastro/migrations/__pycache__
 portalGalt/cadastro/tests/__pycache__
 portalGalt/portalGalt/__pycache__
-portalGalt/db.sqlite3
 */.coverage
 */htmlcov

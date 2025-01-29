@@ -44,5 +44,16 @@ class TestViews(TestSetUp):
         
         self.assertEqual(res.status_code, 401)
     
+    def test_get_frequencia_invalid_user(self):
+        username = self.user_data_not_exist["username"]
+        self.client.force_login(self.admin)
+        get_frequencia_url = reverse("get_frequencia", 
+                args=(username, ))
+        
+        res =self.client.get(get_frequencia_url, None, **self.header_student)
+
+        self.assertEqual(res.status_code, 404)
+
+    
     
 

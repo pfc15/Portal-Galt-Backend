@@ -14,7 +14,6 @@ from rest_framework.decorators import authentication_classes, permission_classes
 from django.shortcuts import get_object_or_404
 
 
-
 # Create your views here.
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
@@ -25,7 +24,7 @@ def getFrequencia(request, aluno):
         dict_retorno = {}
         for d in dias:
             dict_retorno[str(d.data)] = d.presenca
-        return Response({'presenca':dict_retorno}, status=status.HTTP_200_OK) 
+        return Response({'presenca':dict_retorno}, status=status.HTTP_200_OK)
 
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
 

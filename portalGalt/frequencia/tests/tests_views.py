@@ -53,7 +53,36 @@ class TestViews(TestSetUp):
         res =self.client.get(get_frequencia_url, None, **self.header_student)
 
         self.assertEqual(res.status_code, 404)
-
     
+    def test_getFrequenciaTurma_sucessfull(self):
+        self.client.force_login(self.admin)
+        get_frequencia_url = reverse("get_frequencia_turma", 
+                args=(self.turma_existe_data["nome"], "2025-01-01"))
+        
+        res = self.client.get(get_frequencia_url, None, **self.header_admin)
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(res.data["alunos_presentes"], 0)
+        self.assertEqual(res.data["faltas"], 1)
+        self.assertEqual(res.data["presenca"][self.student.username], 0)
+    
+    
+    def test_getFrequenciaTurma_no_permission(self):
+        self.client.force_login(self.student)
+        get_frequencia_url = reverse("get_frequencia_turma",
+            args=(self.turma_existe_data["nome"], "2025-01-01"))
+        
+        res = self.client.get(get_frequencia_url, None, **self.header_admin)
+
+        self.assertEqual(res.status_code, 401)
+    
+    def test_getFrequenciaTurma_invalid_turma(self):
+        self.client.force_login(self.admin)
+        get_frequencia_url = reverse("get_frequencia_turma",
+            args=(self.turma_falsa_data["nome"], "2025-01-01"))
+        
+        res = self.client.get(get_frequencia_url, None, **self.header_admin)
+
+        self.assertEqual(res.status_code, 404)
     
 

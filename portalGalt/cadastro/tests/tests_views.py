@@ -1,8 +1,4 @@
 from .test_setup import TestSetUp
-from unittest.mock import patch, MagicMock
-from django.contrib.auth.models import User, Group
-from django.test import TestCase
-import json
 from django.urls import reverse
 
 # to run only one test linux/bash

@@ -1,6 +1,7 @@
 from rest_framework.test import APITestCase
 
 from django.contrib.auth.models import Group, User
+from cadastro.models import Turma, UserProfile
 from rest_framework.authtoken.models import Token
 from frequencia.models import Presenca
 import datetime
@@ -26,6 +27,21 @@ class TestSetUp(APITestCase):
         self.student2.set_password("password")
         self.student2.groups.add(self.groupStudent)
         self.student2.save()
+
+        # setup Turma
+        self.turma_existe = Turma.objects.create(nome='diurno', ano=2025)
+        self.turma_existe.save()
+        self.userProfile_student = UserProfile.objects.create(turma=self.turma_existe, user=self.student)
+        self.userProfile_student.save()
+        
+        self.turma_existe_data = {
+            "nome":"diurno",
+            "ano":2025
+        }
+        self.turma_falsa_data = {
+            "nome":"matutino",
+            "ano":2025
+        }
 
         self.token_admin = Token.objects.create(user=self.admin)
         self.token_student = Token.objects.create(user=self.student)

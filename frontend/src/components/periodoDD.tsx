@@ -79,7 +79,7 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
         {isOpen && (
           <div className="absolute top-full left-0 w-full bg-gray-300 rounded-lg shadow-md mt-1">
             <ul key="lista" className="text-black" style={{ backgroundColor: '#D9D9D9' }}>
-              {turmas.map(turma => (<li>
+              {turmas.map(turma => (<li key={turma}>
                 <button
                     key={turma}
                   onClick={() => handleSelect(turma)}

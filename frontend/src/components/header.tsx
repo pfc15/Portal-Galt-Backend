@@ -6,15 +6,15 @@ import { useState, useEffect} from 'react';
 export default function Header() {
   const [navBar, setNavBar] = useState(false);
   const [activePath, setActivePath] = useState('');
-  
+
   const handleNavLinkClick = () => {
     setNavBar(false);
   };
 
-  // Set the active path based on window.location.pathname
-  useEffect(() => {
+  // Set the active path based on activePath
+   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setActivePath(window.location.pathname);
+      setActivePath(activePath);
     }
   }, []);
 
@@ -43,7 +43,7 @@ export default function Header() {
                 <Link href="/home">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                      window.location.pathname === '/' ? 'font-bold' : 'font-normal'
+                      activePath === '/' ? 'font-bold' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -55,7 +55,7 @@ export default function Header() {
                 <Link href="/simulados">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/search' ? 'font-bold' : 'font-normal'
+                      activePath === '/search' ? 'font-bold' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -67,7 +67,7 @@ export default function Header() {
                 <Link href="/frequencia">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/about' ? 'font-bold' : 'font-normal'
+                      activePath === '/about' ? 'font-bold' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -79,7 +79,7 @@ export default function Header() {
                 <Link href="/dados">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/data' ? 'font-bold' : 'font-normal'
+                      activePath === '/data' ? 'font-bold' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >

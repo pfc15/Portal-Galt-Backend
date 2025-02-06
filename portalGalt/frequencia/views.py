@@ -50,3 +50,15 @@ def getFrequenciaTurma(request, turma_nome, dia):
 
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
 
+
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+def getListaAlunos(request):
+    if request.user.groups.all()[0].name == 'Administrator':
+        usuarios = User.objects.filter(groups=Group.objects.get(name="student"))
+        lista_usuario = []
+        for user in usuarios:
+            lista_usuario.append(user.username)
+
+        return Response({"lista_usuario":lista_usuario}, status=status.HTTP_200_OK)
+    return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)

@@ -1,13 +1,22 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 
 export default function Header() {
   const [navBar, setNavBar] = useState(false);
+  const [activePath, setActivePath] = useState('');
+  
   const handleNavLinkClick = () => {
     setNavBar(false);
   };
+
+  // Set the active path based on window.location.pathname
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setActivePath(window.location.pathname);
+    }
+  }, []);
 
   return (
     <header className="w-full h-[100px] bg-teal-600 z-50 relative">

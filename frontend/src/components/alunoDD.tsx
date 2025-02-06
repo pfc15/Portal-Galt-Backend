@@ -2,22 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
+import cookie, { useCookies } from "react-cookie";
 
-// Mock de alunos
-const alunos = [
-  "Lucas Almeida",
-  "Ana Beatriz Santos",
-  "Rafael Costa",
-  "Mariana Oliveira",
-  "Pedro Henrique",
-  "Gabriela Souza",
-  "João Pedro",
-  "Isabella Ferreira",
-  "Mateus Martins",
-  "Larissa Rocha",
-  "Thiago Rodrigues",
-  "Amanda Barros",
-];
+
+
 
 interface AlunoDropdownProps {
   selectedAluno: string | null;
@@ -25,9 +13,33 @@ interface AlunoDropdownProps {
 }
 
 export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [cookie, setCookie] = useCookies(["token_auth"]);
+    const [alunos, setAlunos] = useState<string[]>([])
 
+    useEffect(() => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${cookie.token_auth}`
+            }
+        };
+      fetch("http://localhost:8000/frequenciaAPI/getAllstudents/", requestOptions).then(
+        response => {
+          if (!response.ok) {
+            throw new Error('Network not ok')
+          }
+          return response.json()
+        }
+      ).then(data => {
+            setAlunos(data["lista_usuario"])
+            console.log(data["lista_usuario"])
+            console.log("DEU CEEEEERTO")
+      })    
+    }, [cookie.token_auth]);
+    
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Atualiza o campo de busca quando selectedAluno muda
@@ -53,9 +65,9 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
   }, []);
 
   // Filtra os alunos com base no termo de pesquisa
-  const filteredAlunos = alunos.filter((aluno) =>
+  const filteredAlunos = Array.isArray(alunos) ? alunos.filter((aluno) =>
     aluno.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ): []
 
   const handleSelect = (aluno: string) => {
     setSearchTerm(aluno);

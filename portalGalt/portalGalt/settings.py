@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     "frequencia",
     "cadastro",
+    "simulado",
     "rest_framework",
     "rest_framework.authtoken"
 ]

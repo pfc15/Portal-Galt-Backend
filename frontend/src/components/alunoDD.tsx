@@ -4,14 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import cookie, { useCookies } from "react-cookie";
 
-
-
-
 interface AlunoDropdownProps {
   selectedAluno: string | null;
   onSelect: (value: string | null) => void;
 }
 
+const mockAlunos = ["joana", "pedro", "felipe"];
 export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,8 +34,7 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
       ).then(data => {
             setAlunos(data["lista_usuario"])
             console.log(data["lista_usuario"])
-            console.log("DEU CEEEEERTO")
-      })    
+      })
     }, [cookie.token_auth]);
     
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -103,8 +100,8 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
             className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
             style={{ backgroundColor: '#D9D9D9' }}
           >
-            {filteredAlunos.length > 0 ? (
-              filteredAlunos.map((aluno, index) => (
+            {mockAlunos.length > 0 ? (
+              mockAlunos.map((aluno, index) => (
                 <li
                   key={index}
                   className="p-2 hover:bg-[#EFEFEF] cursor-pointer"

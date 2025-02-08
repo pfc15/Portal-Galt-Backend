@@ -122,7 +122,7 @@ export default function FrequenciaAdmin() {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
+      <Header isadmin/>
       <div className="max-w-6xl mx-auto p-4 w-400">
         <div className="flex justify-evenly items-center gap-4 mb-4 mx-auto w-full">
           <PeriodoDropdown onSelect={setPeriodoSelecionado} />

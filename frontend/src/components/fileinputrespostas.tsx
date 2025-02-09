@@ -7,9 +7,15 @@ interface InputFileProps {
   label?: string;
   id?: string;
   setGabarito: (gabarito: Record<string, Record<string, string>>) => void;
+  disabled?: boolean;
 }
 
-const InputFileRespostas: FC<InputFileProps> = ({ label, id, setGabarito }) => {
+const InputFileRespostas: FC<InputFileProps> = ({
+  label,
+  id,
+  setGabarito,
+  disabled = false,
+}) => {
   const [fileName, setFileName] = useState<string>("");
 
   const handleFileChange = async (
@@ -99,7 +105,6 @@ const InputFileRespostas: FC<InputFileProps> = ({ label, id, setGabarito }) => {
     setGabarito(alunos);
   };
 
-  // Função para resetar o input de arquivo
   const resetFileInput = () => {
     setFileName("");
     setGabarito({});
@@ -116,24 +121,32 @@ const InputFileRespostas: FC<InputFileProps> = ({ label, id, setGabarito }) => {
   return (
     <label
       htmlFor={id}
-      className="flex flex-col items-center w-60 mx-auto cursor-pointer"
+      className={`flex flex-col items-center w-60 mx-auto cursor-pointer ${
+        disabled ? "opacity-50 cursor-not-allowed" : ""
+      }`}
     >
       <div className="block w-full text-center text-lg font-medium text-white bg-teal-600 px-4 py-2 rounded-t-lg">
         {label || "Faça o upload das respostas"}
       </div>
-      <div className="flex flex-col items-center justify-center w-full h-32 bg-[#D9D9D9] rounded-b-lg hover:bg-gray-400 relative">
+      <div
+        className={`flex flex-col items-center justify-center w-full h-32 bg-[#D9D9D9] rounded-b-lg hover:bg-gray-400 relative ${
+          disabled ? "pointer-events-none" : ""
+        }`}
+      >
         {fileName ? (
           <div className="flex flex-col items-center">
             <span className="text-black text-sm text-center px-2">
               {fileName}
             </span>
-            <button
-              type="button"
-              className="absolute bottom-2 flex items-center justify-center bg-transparent text-white hover:text-gray-700"
-              onClick={handleCancel}
-            >
-              <X size={24} />
-            </button>
+            {!disabled && (
+              <button
+                type="button"
+                className="absolute bottom-2 flex items-center justify-center bg-transparent text-white hover:text-gray-700"
+                onClick={handleCancel}
+              >
+                <X size={24} />
+              </button>
+            )}
           </div>
         ) : (
           <Upload size={60} color="#9E9E9E" />
@@ -145,6 +158,7 @@ const InputFileRespostas: FC<InputFileProps> = ({ label, id, setGabarito }) => {
         type="file"
         accept=".csv"
         onChange={handleFileChange}
+        disabled={disabled}
       />
     </label>
   );

@@ -88,7 +88,7 @@ export default function EnvioSimulado() {
   };
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen">
+    <div className="flex flex-col items-center w-full bg-gray-100 min-h-screen">
       <Header isadmin />
 
       <div className="flex flex-col items-center gap-4 mx-auto w-full p-8">

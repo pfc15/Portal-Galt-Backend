@@ -1,40 +1,55 @@
 'use client';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect} from 'react';
 
-export default function Header() {
+interface isadmin {
+  isadmin?: boolean;
+}
+
+export default function Header(boolean: isadmin) {
   const [navBar, setNavBar] = useState(false);
+  const [activePath, setActivePath] = useState('');
   const handleNavLinkClick = () => {
     setNavBar(false);
   };
+
+  // Set the active path based on window.location.pathname
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setActivePath(window.location.pathname);
+    }
+  }, []);
 
   return (
     <header className="w-full h-[100px] bg-teal-600 z-50 relative">
       <div className="w-full h-full px-[35px] mx-auto flex justify-between items-center">
         <div className="flex items-center w-[30%]">
+         {boolean.isadmin ?
           <div className="mx-2">
-            <Link href="/home">
+            <Link href="/homeadmin">
               <Image src="/assets/Galt.png" alt="logo" width={200} height={200} />
             </Link>
+          </div> :
+          <div className="mx-2">
+          <Link href="/home">
+            <Image src="/assets/Galt.png" alt="logo" width={200} height={200} />
+          </Link>
           </div>
-        </div>
-        <div className={`md:hidden flex items-center z-[60] ${navBar ? 'fixed top-12 right-12' : 'relative'}`}>
-          <button data-testid="sandwich" onClick={() => setNavBar(!navBar)} className="text-white">
-            {/* {navBar ? <X size={24} /> : <List size={24} />} */}
-          </button>
+          }
         </div>
         <div
           className={`fixed top-0 right-0 h-full w-1/3 transition-transform transform duration-300
             ${navBar ? 'translate-x-0' : 'translate-x-full'} md:static md:translate-x-0 md:w-[50%] md:flex md:justify-between md:items-center z-50`}
         >
           <div className={`flex flex-col w-full h-full md:h-auto ${navBar && 'mt-10'}`}>
+            {boolean.isadmin ?
             <ul className="w-full flex flex-col md:flex-row justify-center md:justify-between text-white font-extrabold mt-16 md:mt-0">
-              <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg ">
-                <Link href="/home">
+             <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg ">
+                <Link href="/homeadmin">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                      window.location.pathname === '/' ? 'font-bold' : 'font-normal'
+                      window.location.pathname === '/homeadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -42,11 +57,23 @@ export default function Header() {
                   </button>
                 </Link>
               </li>
-              <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
-                <Link href="/simulados">
+             <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
+                <Link href="/enviosimulado">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/search' ? 'font-bold' : 'font-normal'
+                      window.location.pathname === '/enviosimulado' ? 'font-bold border-b-white' : 'font-normal'
+                    }`}
+                    onClick={handleNavLinkClick}
+                  >
+                    ADICIONAR<br/>SIMULADO
+                  </button>
+                </Link>
+                </li>
+              <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
+                <Link href="/simuladoadmin">
+                  <button
+                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                      window.location.pathname === '/simuladoadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -55,10 +82,10 @@ export default function Header() {
                 </Link>
               </li>
               <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
-                <Link href="/frequencia">
+                <Link href="/frequenciaadmin">
                   <button
-                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/about' ? 'font-bold' : 'font-normal'
+                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                      window.location.pathname === '/frequenciaadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -66,19 +93,47 @@ export default function Header() {
                   </button>
                 </Link>
               </li>
-              <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
-                <Link href="/dados">
-                  <button
-                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/data' ? 'font-bold' : 'font-normal'
-                    }`}
-                    onClick={handleNavLinkClick}
-                  >
-                    DADOS
-                  </button>
-                </Link>
-              </li>
             </ul>
+            :
+            <ul className="w-full flex flex-col md:flex-row justify-center md:justify-between text-white font-extrabold mt-16 md:mt-0">
+              <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg ">
+               <Link href="/home">
+                 <button
+                   className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                     window.location.pathname === '/home' ? 'font-bold border-b-white' : 'font-normal'
+                   }`}
+                   onClick={handleNavLinkClick}
+                 >
+                   HOME
+                 </button>
+               </Link>
+             </li>
+             <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
+               <Link href="/simuladoaluno">
+                 <button
+                   className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                     window.location.pathname === '/simuladoaluno' ? 'font-bold border-b-white' : 'font-normal'
+                   }`}
+                   onClick={handleNavLinkClick}
+                 >
+                   SIMULADOS
+                 </button>
+               </Link>
+             </li>
+             <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
+               <Link href="/frequenciaaluno">
+                 <button
+                   className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                     window.location.pathname === '/frequenciaaluno' ? 'font-bold border-b-white' : 'font-normal'
+                   }`}
+                   onClick={handleNavLinkClick}
+                 >
+                   FREQUÊNCIA
+                 </button>
+               </Link>
+             </li>
+           </ul>
+           }
           </div>
         </div>
       </div>

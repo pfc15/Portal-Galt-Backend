@@ -9,6 +9,11 @@ GET http://localhost:8000/frequenciaAPI/getFrequencia/pfc/
 Content-Type: application/json
 Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
 
+###
+
+GET http://localhost:8000/frequenciaAPI/getFrequenciaTurma/diurno2025/2025-01-01
+Content-Type: application/json
+Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
 
 ###
 

@@ -2,32 +2,41 @@
 
 import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
-
-// Mock de alunos
-const alunos = [
-  "Lucas Almeida",
-  "Ana Beatriz Santos",
-  "Rafael Costa",
-  "Mariana Oliveira",
-  "Pedro Henrique",
-  "Gabriela Souza",
-  "João Pedro",
-  "Isabella Ferreira",
-  "Mateus Martins",
-  "Larissa Rocha",
-  "Thiago Rodrigues",
-  "Amanda Barros",
-];
+import cookie, { useCookies } from "react-cookie";
 
 interface AlunoDropdownProps {
   selectedAluno: string | null;
   onSelect: (value: string | null) => void;
 }
 
+const mockAlunos = ["joana", "pedro", "felipe"];
 export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdownProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [searchTerm, setSearchTerm] = useState("");
+    const [isOpen, setIsOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [cookie, setCookie] = useCookies(["token_auth"]);
+    const [alunos, setAlunos] = useState<string[]>([])
 
+    useEffect(() => {
+        const requestOptions = {
+            method: 'GET',
+            headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Token ${cookie.token_auth}`
+            }
+        };
+      fetch("http://localhost:8000/frequenciaAPI/getAllstudents/", requestOptions).then(
+        response => {
+          if (!response.ok) {
+            throw new Error('Network not ok')
+          }
+          return response.json()
+        }
+      ).then(data => {
+            setAlunos(data["lista_usuario"])
+            console.log(data["lista_usuario"])
+      })
+    }, [cookie.token_auth]);
+    
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   // Atualiza o campo de busca quando selectedAluno muda
@@ -53,9 +62,9 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
   }, []);
 
   // Filtra os alunos com base no termo de pesquisa
-  const filteredAlunos = alunos.filter((aluno) =>
+  const filteredAlunos = Array.isArray(alunos) ? alunos.filter((aluno) =>
     aluno.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ): []
 
   const handleSelect = (aluno: string) => {
     setSearchTerm(aluno);
@@ -65,19 +74,19 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
-      <span className="bg-teal-500 text-black font-medium px-4 py-2 rounded-l-lg">
+      <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg">
         Selecione um aluno:
       </span>
       {/* Campo de busca */}
       <div className="relative">
         <div
-          className="flex items-center bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
+          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
           style={{ backgroundColor: '#D9D9D9' }}
           onClick={() => setIsOpen(!isOpen)}
         >
           <input
             type="text"
-            className="bg-transparent w-full text-black placeholder-black focus:outline-none"
+            className="bg-transparent w-full text-black placeholder-grey focus:outline-none"
             placeholder="Digite o nome de um aluno"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -91,8 +100,8 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
             className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
             style={{ backgroundColor: '#D9D9D9' }}
           >
-            {filteredAlunos.length > 0 ? (
-              filteredAlunos.map((aluno, index) => (
+            {mockAlunos.length > 0 ? (
+              mockAlunos.map((aluno, index) => (
                 <li
                   key={index}
                   className="p-2 hover:bg-[#EFEFEF] cursor-pointer"

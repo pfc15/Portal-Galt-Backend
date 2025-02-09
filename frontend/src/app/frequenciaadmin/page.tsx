@@ -4,6 +4,7 @@ import AlunoDropdown from "@/components/alunoDD";
 import Header from "@/components/header";
 import PeriodoDropdown from "@/components/periodoDD";
 import DataFrequenciaDropdown from "@/components/datafrequenciaDD";
+import cookie, { useCookies } from "react-cookie";
 
 const mockFrequenciaAluno: Record<
   string,
@@ -67,6 +68,9 @@ export default function FrequenciaAdmin() {
   const [selectedAluno, setSelectedAluno] = useState<string | null>(null);
   const [selectedData, setSelectedData] = useState<string | null>(null);
   const [periodoSelecionado, setPeriodoSelecionado] = useState<string>("Diurno");
+  const [cookie, setCookie] = useCookies(["token_auth"]);
+
+  
 
   // Se um novo período for selecionado, limpar aluno e data
   useEffect(() => {
@@ -84,9 +88,41 @@ export default function FrequenciaAdmin() {
     if (selectedAluno) setSelectedData(null);
   }, [selectedAluno]);
 
+
+  useEffect(() => {
+    if (selectedAluno || selectedData) {
+      const requestOptions = {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Token ${cookie.token_auth}`, // Corrigido para acessar o valor correto do cookie
+        },
+      };
+  
+      // Construção da URL dinamicamente
+  
+    //   fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/${periodoSelecionado}/${selectedData}`, requestOptions)
+    fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/diurno2025/2025-01-01`, requestOptions)    
+    .then(response => {
+          if (!response.ok) {
+            throw new Error("Erro na requisição");
+          }
+          return response.json();
+        })
+        .then(data => {
+          console.log("Dados recebidos:", data);
+          
+          // Aqui você pode definir o estado para exibir os dados retornados
+        })
+        .catch(error => {
+          console.error("Erro ao buscar frequência:", error);
+        });
+    }
+  }, [selectedAluno, selectedData, periodoSelecionado]); // Atualiza sempre que um desses valores mudar
+
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
+      <Header isadmin/>
       <div className="max-w-6xl mx-auto p-4 w-400">
         <div className="flex justify-evenly items-center gap-4 mb-4 mx-auto w-full">
           <PeriodoDropdown onSelect={setPeriodoSelecionado} />

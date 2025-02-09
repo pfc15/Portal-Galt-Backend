@@ -3,38 +3,21 @@
 import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 
-// Mock de datas
-const datas = [
-  "04/02/2025",
-  "15/03/2025",
-  "22/04/2025",
-  "10/05/2025",
-  "30/06/2025",
-  "12/07/2025",
-  "25/08/2025",
-  "08/09/2025",
-  "19/10/2025",
-  "05/11/2025",
-  "14/12/2025",
-];
-
-interface DataFrequenciaDropdownProps {
-  selectedData: string | null;
+interface SimuladoDropdownProps {
+  simulados: Record<string, Record<string, Record<string, boolean>>>;
+  selectedSimulado: string | null;
   onSelect: (value: string | null) => void;
 }
 
-export default function DataFrequenciaDropdown({ selectedData, onSelect }: DataFrequenciaDropdownProps) {
+export default function SimuladoDropdownAdm({
+  simulados,
+  selectedSimulado,
+  onSelect,
+}: SimuladoDropdownProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Atualiza o campo de busca quando selectedData muda
-  useEffect(() => {
-    setSearchTerm(selectedData ?? "");
-  }, [selectedData]);
-
-  // Fecha o dropdown ao clicar fora
   useEffect(() => {
     function handleClickOutside(event: MouseEvent | TouchEvent) {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -51,55 +34,59 @@ export default function DataFrequenciaDropdown({ selectedData, onSelect }: DataF
     };
   }, []);
 
-  // Filtra as datas com base no termo de pesquisa
-  const filteredDatas = datas.filter((data) =>
-    data.toLowerCase().includes(searchTerm.toLowerCase())
+  const simuladoKeys = Object.keys(simulados);
+  const filteredSimulados = ["Todos", ...simuladoKeys].filter((simulado) =>
+    simulado.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleSelect = (simulado: string) => {
+    setIsOpen(false);
+    onSelect(simulado === "Todos" ? null : simulado);
+    setSearchTerm("");
+  };
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
-      <span className="bg-teal-600 text-white  font-medium px-4 py-2 rounded-l-lg">
-        Selecione uma data:
+      <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg min-w-[200px] text-center">
+        Selecione um simulado:
       </span>
-      {/* Campo de busca */}
       <div className="relative">
         <div
-          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-40"
-          style={{ backgroundColor: "#D9D9D9" }}
+          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
+          style={{ backgroundColor: '#D9D9D9' }}
           onClick={() => setIsOpen(!isOpen)}
         >
           <input
             type="text"
             className="bg-transparent w-full text-black placeholder-grey focus:outline-none"
-            placeholder="Digite uma data"
+            placeholder="Digite o nome do simulado"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
           <FiSearch className="w-5 h-5" />
         </div>
 
-        {/* Lista de datas */}
         {isOpen && (
           <ul
             className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
-            style={{ backgroundColor: "#D9D9D9" }}
+            style={{ backgroundColor: '#D9D9D9' }}
           >
-            {filteredDatas.length > 0 ? (
-              filteredDatas.map((data, index) => (
+            {filteredSimulados.length > 0 ? (
+              filteredSimulados.map((simulado, index) => (
                 <li
                   key={index}
-                  className="p-2 hover:bg-[#EFEFEF] cursor-pointer"
-                  onClick={() => {
-                    setSearchTerm(data);
-                    setIsOpen(false);
-                    onSelect(data); // Chama a função passada como prop
-                  }}
+                  className={`p-2 cursor-pointer hover:bg-gray-200 ${
+                    selectedSimulado === simulado || (simulado === "Todos" && selectedSimulado === null)
+                      ? "bg-teal-500 text-white font-bold"
+                      : ""
+                  }`}
+                  onClick={() => handleSelect(simulado)}
                 >
-                  {data}
+                  {simulado}
                 </li>
               ))
             ) : (
-              <li className="p-2 text-gray-600">Nenhuma data encontrada</li>
+              <li className="p-2 text-gray-500">Nenhum simulado encontrado</li>
             )}
           </ul>
         )}

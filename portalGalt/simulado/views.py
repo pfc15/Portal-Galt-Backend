@@ -9,50 +9,16 @@ from .analiser import simuladoAanaliser
 from .models import *
 
 from django.contrib.auth.models import Group, User
+from django.views.decorators.csrf import csrf_exempt
 # Create your views here.
 
 
-class FileUploadView(APIView):
-    parser_classes = [MultiPartParser, FormParser]  # Use MultiPartParser to handle file uploads
+@csrf_exempt
+@api_view(['POST'])
+def fileUpload(request):
+    corrigido = simuladoAanaliser(gabarito=request.data["gabarito"], respostas=request.data["respostas"], nome=request.data["nome"])
 
-    def post(self, request, *args, **kwargs):
-        serializer = FileUploadSerializer(data=request.data)
-
-        if serializer.is_valid():
-            uploaded_file = serializer.validated_data['gabarito']
-            caminho = f'uploads/{uploaded_file.name}'
-            # Process the file (e.g., save it to disk or perform other operations)
-            with open(caminho, 'wb+') as destination:
-                for chunk in uploaded_file.chunks():
-                    destination.write(chunk)
-            
-            uploaded_file = serializer.validated_data['respostas']
-            caminho2 = f'uploads/{uploaded_file.name}'
-            # Process the file (e.g., save it to disk or perform other operations)
-            with open(caminho2, 'wb+') as destination:
-                for chunk in uploaded_file.chunks():
-                    destination.write(chunk)
-            
-            corrigido = simuladoAanaliser(caminho_arquivo_gabarito=caminho, caminho_arquivo_respostas=caminho2, nome=serializer.validated_data['nome'])
-
-            return Response({"correcao":corrigido.df_coorrige}, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-# @api_view(['GET'])
-# def getNota(request, aluno, simuladoNome):
-#     simulado = Simulado.objects.get(nome=simuladoNome)
-#     retorno = {simuladoNome:{}}
-#     if aluno != "null":
-#         user = User.objects.get(username=aluno)
-#         nota = Nota.objects.get(aluno=aluno, simulado=simulado)
-#     else:
-#         users = User.objects.all()
-#         for u in users:
-#             retorno[simuladoNome][u]
-
-
-#     return Response({nota}, status=status.HTTP_200_OK)
+    return Response({"datail": "ok!"}, status=status.HTTP_201_CREATED)
 
 
 @api_view(['GET'])

@@ -5,47 +5,29 @@ from django.contrib.auth.models import User
 import json
 
 class simuladoAanaliser():
-    def __init__(self, nome, caminho_arquivo_respostas, caminho_arquivo_gabarito):
-        df_alunos = pd.read_csv(caminho_arquivo_respostas)
-        df_gabarito = pd.read_csv(caminho_arquivo_gabarito)
-        df_gabarito.set_index('questão', inplace=True)
-        print(len(df_gabarito))
-        simulado = Simulado.objects.create(nome=nome, quant_questoes=len(df_gabarito),path_gabarito=caminho_arquivo_gabarito, path_respostas=caminho_arquivo_respostas)
+    def __init__(self, nome, respostas, gabarito):
+        aluno_real = nome.replace("'","")
+        simulado = Simulado.objects.create(nome=aluno_real, quant_questoes=len(gabarito),path_gabarito=gabarito, path_respostas=respostas)
         simulado.save()
-
-        # Remover a coluna 'aluno' para realizar a comparação
-        df_alunos_no_names = df_alunos.drop(columns=['aluno'])
-        df_alunos_no_names = df_alunos_no_names.reindex(columns=df_gabarito.index)
-
-        # Comparar as respostas dos alunos com o gabarito
-        df_corrigido = pd.DataFrame()
-        index =0
-        questoes = df_alunos_no_names.columns
-        for i in range(len(questoes)):
-            for e in df_alunos_no_names.iterrows():
-                df_corrigido[questoes[index]] = df_alunos_no_names[questoes[index]] == df_gabarito['gabarito'].iloc[0]
-            index+=1
-
-        # Adicionar o nome dos alunos novamente no DataFrame corrigido
-        df_corrigido['aluno'] = df_alunos['aluno']
         
-       
-        df_corrigido.set_index('aluno', inplace=True)
-        for row in df_corrigido.iterrows():
-            aluno = User.objects.get(username=row[0])
-            a = dict(row[1])
-            for k,v in a.items():
-                a[k] = True if np.True_ else False
-            print('-='*25)
-            print(a)
-            nova_nota = Nota.objects.create(aluno=aluno, quant_acertos=sum(a.values()), questoes=json.dumps(a), simulado=simulado)
+
+        # Corrigir e exibir as notas
+        notas_finais = self.corrigir_prova(respostas, gabarito)
+        for aluno, nota in notas_finais.items():
+            aluno_real = aluno.replace("'","")
+            print(f"{aluno_real}: {nota} acertos")
+            user = User.objects.get(username=aluno_real)
+            nova_nota = Nota.objects.create(aluno=user, quant_acertos=nota, questoes=json.dumps(respostas[aluno]), simulado=simulado)
             nova_nota.save()
-        
-        df_corrigido = df_corrigido.transpose()
-        
+    
 
-        self.df_coorrige = df_corrigido.to_json()
-
+# Função para corrigir as respostas
+    def corrigir_prova(self, respostas, gabarito):
+        notas = {}
+        for aluno, re in respostas.items():
+            acertos = sum(1 for questao, r in re.items() if r == gabarito.get(questao))
+            notas[aluno] = acertos  # Nota é o número de acertos
+        return notas
 
 
 

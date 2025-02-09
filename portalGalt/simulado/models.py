@@ -5,8 +5,8 @@ from django.contrib.auth.models import User
 
 class Simulado(models.Model):
     nome = models.CharField(max_length=100)
-    path_respostas = models.CharField(max_length=300)
-    path_gabarito = models.CharField(max_length=300)
+    path_respostas = models.CharField(max_length=10000)
+    path_gabarito = models.CharField(max_length=5000)
     quant_questoes = models.IntegerField()
 
     def __string__(self):

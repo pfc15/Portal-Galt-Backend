@@ -58,7 +58,7 @@ export default function SimuladosAdmin() {
                     'Authorization': `Token ${cookie.token_auth}`,
                 },
             };
-            fetch(`http://localhost:8000/simulado/getListSimulados/`, requestOptions)
+            fetch(`http://localhost:8000/simulado/getListSimulados/${selectedAluno}`, requestOptions)
                     .then(response => {
                         if (!response.ok) {
                             throw new Error("Erro na requisição");

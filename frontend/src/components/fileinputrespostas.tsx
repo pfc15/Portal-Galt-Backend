@@ -22,39 +22,95 @@ const InputFileRespostas: FC<InputFileProps> = ({ label, id, setGabarito }) => {
 
     const text = await file.text();
     const linhas = text
-      .split("\n")
+      .split(/\r?\n/)
       .map((linha) => linha.trim())
       .filter((linha) => linha);
 
-    if (linhas.length < 2) return; // Garante que há cabeçalho e pelo menos um aluno
+    if (linhas.length < 2) {
+      alert("Arquivo inválido: Deve conter pelo menos um aluno e uma questão.");
+      resetFileInput();
+      return;
+    }
 
-    const colunas = linhas[0].split(",").map((item) => item.trim()); // Pega os nomes das colunas
+    const separadores = ["\t", ",", ";"];
+    const delimitador =
+      separadores.find((sep) => linhas[0].includes(sep)) || ",";
+    const colunas = linhas[0].split(delimitador).map((item) => item.trim());
+
+    if (colunas.length < 2 || colunas[0].toLowerCase() !== "aluno") {
+      alert(
+        `Arquivo inválido: A primeira coluna deve ser 'aluno'.\n\nDetectado: '${colunas[0]}'`
+      );
+      resetFileInput();
+      return;
+    }
+
     const alunos: Record<string, Record<string, string>> = {};
 
     for (let i = 1; i < linhas.length; i++) {
-      const dados = linhas[i].split(",").map((item) => item.trim());
+      const dados = linhas[i].split(delimitador).map((item) => item.trim());
       const aluno = dados[0];
+
+      if (!aluno) {
+        alert(`Erro na linha ${i + 1}: O nome do aluno não pode estar vazio.`);
+        resetFileInput();
+        return;
+      }
+
       const respostas: Record<string, string> = {};
 
       for (let j = 1; j < colunas.length; j++) {
         const questao = colunas[j];
-        const resposta = dados[j] ?? ""; // Mantém a resposta original
+        const resposta = dados[j] ?? "";
+
+        if (!questao) {
+          alert(`Erro na linha ${i + 1}: Coluna de questão vazia.`);
+          resetFileInput();
+          return;
+        }
+
+        if (!resposta) {
+          alert(
+            `Erro na linha ${
+              i + 1
+            }, questão '${questao}': Resposta não pode estar vazia.`
+          );
+          resetFileInput();
+          return;
+        }
+
+        if (resposta.length !== 1) {
+          alert(
+            `Erro na linha ${
+              i + 1
+            }, questão '${questao}': A resposta '${resposta}' deve ter apenas 1 caractere.`
+          );
+          resetFileInput();
+          return;
+        }
+
         respostas[questao] = resposta;
       }
 
       alunos[aluno] = respostas;
     }
 
+    console.log("✅ Respostas carregadas:", alunos);
     setGabarito(alunos);
   };
 
-  const handleCancel = () => {
+  // Função para resetar o input de arquivo
+  const resetFileInput = () => {
     setFileName("");
     setGabarito({});
     const input = document.getElementById(id!) as HTMLInputElement;
     if (input) {
       input.value = "";
     }
+  };
+
+  const handleCancel = () => {
+    resetFileInput();
   };
 
   return (

@@ -27,33 +27,91 @@ const InputFile: FC<InputFileProps> = ({ label, id, setGabarito }) => {
       const text = e.target.result as string;
       console.log("📄 Arquivo lido (bruto):", text);
 
-      const lines = text
+      const linhas = text
         .split("\n")
-        .map((line) => line.trim())
-        .filter((line) => line);
-      console.log("🔹 Linhas do CSV:", lines);
+        .map((linha) => linha.trim())
+        .filter(Boolean);
 
-      if (lines.length < 2) {
-        console.error("❌ Arquivo inválido: menos de 2 linhas.");
+      if (linhas.length < 2) {
+        alert(
+          "Arquivo inválido: deve conter pelo menos uma questão e um gabarito."
+        );
+        resetFileInput();
+        return;
+      }
+
+      const possiveisSeparadores = ["\t", ",", ";"];
+      let separadorDetectado =
+        possiveisSeparadores.find((sep) => linhas[0].includes(sep)) || ",";
+
+      const colunas = linhas[0]
+        .split(separadorDetectado)
+        .map((coluna) => coluna.trim().toLowerCase());
+
+      if (
+        colunas.length !== 2 ||
+        colunas[0] !== "questao" ||
+        colunas[1] !== "gabarito"
+      ) {
+        alert(
+          "Arquivo inválido: a primeira linha deve ter 'questao' e 'gabarito'."
+        );
+        resetFileInput();
         return;
       }
 
       const gabarito: Record<string, string> = {};
 
-      lines.slice(1).forEach((line) => {
-        const [questao, resposta] = line
-          .split(/[,;]/)
-          .map((item) => item.trim());
-        if (questao && resposta) {
-          gabarito[questao] = resposta; 
+      // Lê as questões e respostas a partir da segunda linha
+      for (let i = 1; i < linhas.length; i++) {
+        const partes = linhas[i].split(separadorDetectado).map((p) => p.trim());
+
+        if (partes.length !== 2) {
+          alert(
+            `Erro na linha ${i + 1}: A linha deve conter exatamente 2 colunas.`
+          );
+          resetFileInput();
+          return;
         }
-      });
+
+        const [questao, resposta] = partes;
+
+        if (!questao || !resposta) {
+          alert(
+            `Erro na linha ${i + 1}: Questão e gabarito não podem estar vazios.`
+          );
+          resetFileInput();
+          return;
+        }
+
+        if (resposta.length !== 1) {
+          alert(
+            `Erro na linha ${
+              i + 1
+            }: A resposta "${resposta}" deve ter apenas 1 caractere.`
+          );
+          resetFileInput();
+          return;
+        }
+
+        gabarito[questao] = resposta;
+      }
 
       console.log("✅ Gabarito gerado:", gabarito);
       setGabarito(gabarito);
     };
 
     reader.readAsText(file);
+  };
+
+  // Função para resetar o input de arquivo
+  const resetFileInput = () => {
+    setFileName("");
+    setGabarito({});
+    const input = document.getElementById(id!) as HTMLInputElement;
+    if (input) {
+      input.value = "";
+    }
   };
 
   const handleCancel = () => {

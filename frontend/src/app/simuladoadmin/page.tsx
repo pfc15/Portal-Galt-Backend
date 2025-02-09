@@ -23,9 +23,34 @@ export default function SimuladosAdmin() {
     const [selectedAluno, setSelectedAluno] = useState<string | null>(null);
     const [selectedSimulado, setSelectedSimulado] = useState<string | null>(null);
     const [cookie] = useCookies(["token_auth"]);
+    const [simulados, setSimulados] = useState<Record<string, Record<string, Record<string, boolean>>>> ({})
 
-    useEffect(() => {
-        if (selectedAluno || selectedSimulado) {
+    // useEffect(() => {
+    //     if (selectedAluno || selectedSimulado) {
+    //         const requestOptions = {
+    //             method: 'GET',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //                 'Authorization': `Token ${cookie.token_auth}`,
+    //             },
+    //         };
+    //         fetch(`http://localhost:8000/simulado/getNota/${selectedAluno}/${selectedSimulado}`, requestOptions)
+    //             .then(response => {
+    //                 if (!response.ok) {
+    //                     throw new Error("Erro na requisição");
+    //                 }
+    //                 return response.json();
+    //             })
+    //             .then(data => {
+    //                 console.log("aeee Dados recebidos:", data);
+    //             })
+    //             .catch(error => {
+    //                 console.error("Erro ao buscar simulados:", error);
+    //             });
+    //     }
+    // }, [selectedAluno, selectedSimulado]);
+
+    useEffect(() =>{
             const requestOptions = {
                 method: 'GET',
                 headers: {
@@ -33,35 +58,36 @@ export default function SimuladosAdmin() {
                     'Authorization': `Token ${cookie.token_auth}`,
                 },
             };
-            fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/diurno2025/2025-01-01`, requestOptions)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error("Erro na requisição");
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Dados recebidos:", data);
-                })
-                .catch(error => {
-                    console.error("Erro ao buscar simulados:", error);
-                });
-        }
-    }, [selectedAluno, selectedSimulado]);
+            fetch(`http://localhost:8000/simulado/getListSimulados/`, requestOptions)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error("Erro na requisição");
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Dados recebidos:", data);
+                        setSimulados(data["lista_simulados"])
+                    })
+                    .catch(error => {
+                        console.error("Erro ao buscar simulados:", error);
+                    });
+        
+    }, [])
 
     // Filtro para mostrar apenas os dados certos conforme a seleção
     const getFilteredResults = () => {
         if (selectedSimulado && selectedAluno) {
-            return mockSimulados[selectedSimulado]?.[selectedAluno] || null;
+            return simulados[selectedSimulado]?.[selectedAluno] || null;
         }
         if (selectedSimulado) {
-            return mockSimulados[selectedSimulado];
+            return simulados[selectedSimulado];
         }
         if (selectedAluno) {
             const alunoData: Record<string, Record<string, boolean>> = {};
-            for (const simulado in mockSimulados) {
-                if (mockSimulados[simulado][selectedAluno]) {
-                    alunoData[simulado] = mockSimulados[simulado][selectedAluno];
+            for (const simulado in simulados) {
+                if (simulados[simulado][selectedAluno]) {
+                    alunoData[simulado] = simulados[simulado][selectedAluno];
                 }
             }
             return alunoData;
@@ -80,7 +106,7 @@ export default function SimuladosAdmin() {
             <div className="max-w-6xl mx-auto p-4">
                 <div className="flex justify-center gap-4 mb-4">
                     <AlunoDropdown selectedAluno={selectedAluno} onSelect={setSelectedAluno} />
-                    <SimuladoDropdownAdm simulados={mockSimulados} selectedSimulado={selectedSimulado} onSelect={setSelectedSimulado} />
+                    <SimuladoDropdownAdm simulados={simulados} selectedSimulado={selectedSimulado} onSelect={setSelectedSimulado} />
                 </div>
 
                 {filteredResults && (

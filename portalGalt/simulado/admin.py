@@ -1,3 +1,10 @@
 from django.contrib import admin
+from .models import Simulado, Nota
 
-# Register your models here.
+@admin.register(Simulado)
+class SimuladoAdmin(admin.ModelAdmin):
+    pass
+
+@admin.register(Nota)
+class NotaAdmin(admin.ModelAdmin):
+    list_display = ('aluno', 'simulado')

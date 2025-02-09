@@ -1,11 +1,17 @@
 import pandas as pd
+import numpy as np
+from .models import *
+from django.contrib.auth.models import User
+import json
 
 class simuladoAanaliser():
-    def __init__(self, caminho_arquivo_respostas, caminho_arquivo_gabarito):
+    def __init__(self, nome, caminho_arquivo_respostas, caminho_arquivo_gabarito):
         df_alunos = pd.read_csv(caminho_arquivo_respostas)
         df_gabarito = pd.read_csv(caminho_arquivo_gabarito)
         df_gabarito.set_index('questão', inplace=True)
-        
+        print(len(df_gabarito))
+        simulado = Simulado.objects.create(nome=nome, quant_questoes=len(df_gabarito),path_gabarito=caminho_arquivo_gabarito, path_respostas=caminho_arquivo_respostas)
+        simulado.save()
 
         # Remover a coluna 'aluno' para realizar a comparação
         df_alunos_no_names = df_alunos.drop(columns=['aluno'])
@@ -25,10 +31,22 @@ class simuladoAanaliser():
         
        
         df_corrigido.set_index('aluno', inplace=True)
+        for row in df_corrigido.iterrows():
+            aluno = User.objects.get(username=row[0])
+            a = dict(row[1])
+            for k,v in a.items():
+                a[k] = True if np.True_ else False
+            print('-='*25)
+            print(a)
+            nova_nota = Nota.objects.create(aluno=aluno, quant_acertos=sum(a.values()), questoes=json.dumps(a), simulado=simulado)
+            nova_nota.save()
+        
         df_corrigido = df_corrigido.transpose()
-        print(df_corrigido)
+        
 
         self.df_coorrige = df_corrigido.to_json()
+
+
 
 
 if __name__=="__main__":

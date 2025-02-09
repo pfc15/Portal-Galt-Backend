@@ -14,10 +14,9 @@ export default function Header(boolean: isadmin) {
     setNavBar(false);
   };
 
-  // Set the active path based on window.location.pathname
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      setActivePath(window.location.pathname);
+      setActivePath(activePath);
     }
   }, []);
 
@@ -49,7 +48,7 @@ export default function Header(boolean: isadmin) {
                 <Link href="/homeadmin">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                      window.location.pathname === '/homeadmin' ? 'font-bold border-b-white' : 'font-normal'
+                      activePath === '/homeadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -61,7 +60,7 @@ export default function Header(boolean: isadmin) {
                 <Link href="/enviosimulado">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-white py-2 md:py-0 ${
-                      window.location.pathname === '/enviosimulado' ? 'font-bold border-b-white' : 'font-normal'
+                      activePath === '/enviosimulado' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -73,7 +72,7 @@ export default function Header(boolean: isadmin) {
                 <Link href="/simuladoadmin">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                      window.location.pathname === '/simuladoadmin' ? 'font-bold border-b-white' : 'font-normal'
+                      activePath === '/simuladoadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -85,7 +84,7 @@ export default function Header(boolean: isadmin) {
                 <Link href="/frequenciaadmin">
                   <button
                     className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                      window.location.pathname === '/frequenciaadmin' ? 'font-bold border-b-white' : 'font-normal'
+                      activePath === '/frequenciaadmin' ? 'font-bold border-b-white' : 'font-normal'
                     }`}
                     onClick={handleNavLinkClick}
                   >
@@ -100,7 +99,7 @@ export default function Header(boolean: isadmin) {
                <Link href="/home">
                  <button
                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                     window.location.pathname === '/home' ? 'font-bold border-b-white' : 'font-normal'
+                     activePath === '/home' ? 'font-bold border-b-white' : 'font-normal'
                    }`}
                    onClick={handleNavLinkClick}
                  >
@@ -112,7 +111,7 @@ export default function Header(boolean: isadmin) {
                <Link href="/simuladoaluno">
                  <button
                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                     window.location.pathname === '/simuladoaluno' ? 'font-bold border-b-white' : 'font-normal'
+                     activePath === '/simuladoaluno' ? 'font-bold border-b-white' : 'font-normal'
                    }`}
                    onClick={handleNavLinkClick}
                  >
@@ -124,7 +123,7 @@ export default function Header(boolean: isadmin) {
                <Link href="/frequenciaaluno">
                  <button
                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                     window.location.pathname === '/frequenciaaluno' ? 'font-bold border-b-white' : 'font-normal'
+                     activePath === '/frequenciaaluno' ? 'font-bold border-b-white' : 'font-normal'
                    }`}
                    onClick={handleNavLinkClick}
                  >

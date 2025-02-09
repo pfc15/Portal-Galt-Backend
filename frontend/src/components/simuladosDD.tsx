@@ -51,24 +51,24 @@ export default function SimuladoDropdown({
                 Selecione um simulado:
             </span>
             <div className="relative">
-                <div
-                    className="flex items-center bg-white border border-gray-300 p-2 rounded-r-lg cursor-pointer relative w-60 shadow-sm"
-                    onClick={() => setIsOpen(!isOpen)}
-                >
-                    <input
-                        type="text"
-                        className="bg-transparent w-full text-gray-700 placeholder-gray-500 focus:outline-none cursor-pointer"
-                        placeholder="Digite o nome do simulado"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        onClick={() => setIsOpen(true)}
-                    />
-                    <FiSearch className="w-5 h-5 text-gray-600" />
-                </div>
+        <div
+          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
+          style={{ backgroundColor: '#D9D9D9' }}
+          onClick={() => setIsOpen(!isOpen)}
+        >
+          <input
+            type="text"
+            className="bg-transparent w-full text-black placeholder-grey focus:outline-none"
+            placeholder="Digite o nome do simulado"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+          <FiSearch className="w-5 h-5" />
+        </div>
 
                 {isOpen && (
                     <ul
-                        className="absolute w-full text-gray-700 bg-white border border-gray-300 rounded-md max-h-96 overflow-y-auto mt-1 shadow-lg"
+                        className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
                     >
                         {filteredSimulados.length > 0 ? (
                             filteredSimulados.map((simulado, index) => (

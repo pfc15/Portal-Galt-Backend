@@ -77,7 +77,7 @@ export default function SimuladosAdmin() {
     return (
         <div className="min-h-screen bg-gray-100">
             <Header isadmin />
-            <div className="max-w-4xl mx-auto p-4">
+            <div className="max-w-6xl mx-auto p-4">
                 <div className="flex justify-center gap-4 mb-4">
                     <AlunoDropdown selectedAluno={selectedAluno} onSelect={setSelectedAluno} />
                     <SimuladoDropdownAdm simulados={mockSimulados} selectedSimulado={selectedSimulado} onSelect={setSelectedSimulado} />

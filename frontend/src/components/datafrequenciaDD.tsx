@@ -58,19 +58,19 @@ export default function DataFrequenciaDropdown({ selectedData, onSelect }: DataF
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
-      <span className="bg-teal-500 text-black font-medium px-4 py-2 rounded-l-lg">
+      <span className="bg-teal-600 text-white  font-medium px-4 py-2 rounded-l-lg">
         Selecione uma data:
       </span>
       {/* Campo de busca */}
       <div className="relative">
         <div
-          className="flex items-center bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer relative w-40"
+          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-40"
           style={{ backgroundColor: "#D9D9D9" }}
           onClick={() => setIsOpen(!isOpen)}
         >
           <input
             type="text"
-            className="bg-transparent w-full text-black placeholder-black focus:outline-none"
+            className="bg-transparent w-full text-black placeholder-grey focus:outline-none"
             placeholder="Digite uma data"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}

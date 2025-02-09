@@ -38,11 +38,8 @@ def getFrequencia(request, aluno):
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])
 def getFrequenciaTurma(request, turma_nome, dia):
-    turma_nome = turma_nome.lower()
-    print(dia)
     day, month, year = dia.split("-")
     dia = f"{year}-{month}-{day}"
-    print(dia)
     turma = get_object_or_404(Turma, nome=turma_nome)
     if request.user.groups.all()[0].name == 'Administrator':
         alunos = UserProfile.objects.filter(turma=turma)
@@ -61,8 +58,8 @@ def getFrequenciaTurma(request, turma_nome, dia):
         dic = {}
         year, month, day = dia.split("-")
         dia = f"{day}/{month}/{year}"
-        print(dia)
         dic[dia] = lista
+
         return Response({"presenca":dic, "alunos_presentes":alunos_presentes, "faltas":len(lista)-alunos_presentes}, status=status.HTTP_200_OK)
 
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
@@ -87,12 +84,10 @@ def getListaDatas(request):
         datas = Presenca.objects.all()
         lista_datas = []
         for d in datas:
-            print(d.data)
             year, month, day = str(d.data).split("-")
             dia = f"{day}/{month}/{year}"
             if dia not in lista_datas:
                 lista_datas.append(dia)
-        print(lista_datas)
         return Response({"lista_datas":lista_datas}, status=status.HTTP_200_OK)
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
 
@@ -106,6 +101,5 @@ def getListaTurmas(request):
         for t in turmas:
             if t.nome not in lista_datas:
                 lista_datas.append(t.nome)
-        print(lista_datas)
         return Response({"lista_turmas":lista_datas}, status=status.HTTP_200_OK)
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)

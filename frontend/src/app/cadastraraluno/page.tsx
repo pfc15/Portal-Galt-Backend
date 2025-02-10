@@ -6,6 +6,9 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { useRouter } from "next/navigation";
 import Header from "@/components/header";
+import { toast } from 'sonner';
+
+
 
 export default function CadastroPage() {
   const [email, setEmail] = useState("");
@@ -16,11 +19,15 @@ export default function CadastroPage() {
   const router = useRouter();
 
   function Cadastrar() {
+
+    const periodoFormatado = periodo.replace(/\s/g, '');
+    const formattedUsername = username.replace(/\s/g, '_');
+
     const data = {
-        username,
+        username: formattedUsername,
         email,
         password,
-        periodo,
+        periodo: periodoFormatado
       };
     console.log("Enviando dados:", data);
 
@@ -41,18 +48,30 @@ export default function CadastroPage() {
     };
 
     fetch("http://localhost:8000/signup/", requestOptions)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Erro ao cadastrar");
-        }
-        return response.json();
-      })
-      .then((data) => {
-        console.log("Cadastro realizado com sucesso:", data);
-        alert("Aluno cadastrado com sucesso!");
-        router.push("/visualizaralunos");
-      })
-      .catch((error) => console.error("Erro ao cadastrar:", error));
+  .then(async (response) => {
+    const data = await response.json();
+    
+    if (!response.ok) {
+      // Erros 4xx/5xx
+      throw new Error(data.detail || "Erro desconhecido do servidor");
+    }
+
+    // Verificação de segurança
+    if (!data.aluno?.username) {
+      throw new Error("Estrutura da resposta inválida");
+    }
+
+    // Mensagem de sucesso
+    toast.success('Aluno cadastrado!', {
+      description: `${data.aluno.username} - ${data.aluno.turma}`,
+      position: 'bottom-right'
+    });
+    router.push("/visualizaralunos");
+  })
+  .catch((error) => {
+    console.error("Erro na requisição:", error);
+    alert(error.message || "❌ Falha na comunicação com o servidor");
+  });
   }
 
   return (

@@ -10,7 +10,8 @@ interface isadmin {
 export default function Header({ isadmin }: isadmin) {
   const [navBar, setNavBar] = useState(false);
   const [activePath, setActivePath] = useState('');
-  const [showDropdown, setShowDropdown] = useState(false);
+  const [showSimuladoDropdown, setShowSimuladoDropdown] = useState(false);
+  const [showAlunoDropdown, setShowAlunoDropdown] = useState(false);
   const [closeTimeout, setCloseTimeout] = useState<NodeJS.Timeout | null>(null);
 
   const handleNavLinkClick = () => {
@@ -23,16 +24,24 @@ export default function Header({ isadmin }: isadmin) {
     }
   }, []);
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = (dropdown: 'simulado' | 'aluno') => {
     if (closeTimeout) {
       clearTimeout(closeTimeout); // Cancela o fechamento se o mouse voltar
     }
-    setShowDropdown(true);
+    if (dropdown === 'simulado') {
+      setShowSimuladoDropdown(true);
+    } else if (dropdown === 'aluno') {
+      setShowAlunoDropdown(true);
+    }
   };
 
-  const handleMouseLeave = () => {
+  const handleMouseLeave = (dropdown: 'simulado' | 'aluno') => {
     const timeout = setTimeout(() => {
-      setShowDropdown(false);
+      if (dropdown === 'simulado') {
+        setShowSimuladoDropdown(false);
+      } else if (dropdown === 'aluno') {
+        setShowAlunoDropdown(false);
+      }
     }, 300); // Tempo mínimo antes de fechar (300ms)
     setCloseTimeout(timeout);
   };
@@ -68,32 +77,47 @@ export default function Header({ isadmin }: isadmin) {
               {/* Dropdown de Simulados */}
               <li
                 className="relative w-full md:w-[30%] flex justify-left ml-2 text-lg"
-                onMouseEnter={handleMouseEnter}
-                onMouseLeave={handleMouseLeave}
+                onMouseEnter={isadmin ? () => handleMouseEnter('simulado') : undefined}
+                onMouseLeave={isadmin ? () => handleMouseLeave('simulado') : undefined}
               >
-                <button
-                  className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
-                    activePath.includes('simulado') ? 'font-bold border-b-white' : 'font-normal'
-                  }`}
-                >
-                  SIMULADOS
-                </button>
-                {showDropdown && (
-                  <div 
-                    className="absolute top-full left-0 w-48 bg-teal-700 text-white shadow-md rounded-md mt-2"
-                    onMouseEnter={handleMouseEnter} // Evita o fechamento ao entrar no dropdown
-                    onMouseLeave={handleMouseLeave} // Fecha com atraso ao sair
-                  >
-                    <Link href={isadmin ? '/enviosimulado' : '/simuladoaluno'}>
-                      <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-t-md cursor-pointer">ADICIONAR SIMULADO</div>
-                    </Link>
-                    <Link href="/visualizarsimulados">
-                      <div className="px-4 py-2 hover:bg-gray-400 cursor-pointer">VISUALIZAR ENVIOS</div>
-                    </Link>
-                    <Link href="/simuladoadmin">
-                      <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-b-md cursor-pointer">VISUALIZAR RESULTADOS</div>
-                    </Link>
-                  </div>
+                {isadmin ? (
+                  <>
+                    <button
+                      className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                        activePath.includes('simulado') ? 'font-bold border-b-white' : 'font-normal'
+                      }`}
+                    >
+                      SIMULADOS
+                    </button>
+                    {showSimuladoDropdown && (
+                      <div 
+                        className="absolute top-full left-0 w-48 bg-teal-700 text-white shadow-md rounded-md mt-2"
+                        onMouseEnter={() => handleMouseEnter('simulado')} // Evita o fechamento ao entrar no dropdown
+                        onMouseLeave={() => handleMouseLeave('simulado')} // Fecha com atraso ao sair
+                      >
+                        <Link href="/enviosimulado">
+                          <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-t-md cursor-pointer">ADICIONAR SIMULADO</div>
+                        </Link>
+                        <Link href="/visualizarsimulados">
+                          <div className="px-4 py-2 hover:bg-gray-400 cursor-pointer">VISUALIZAR ENVIOS</div>
+                        </Link>
+                        <Link href="/simuladoadmin">
+                          <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-b-md cursor-pointer">VISUALIZAR RESULTADOS</div>
+                        </Link>
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <Link href="/simuladoaluno">
+                    <button
+                      className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                        activePath.includes('simulado') ? 'font-bold border-b-white' : 'font-normal'
+                      }`}
+                      onClick={handleNavLinkClick}
+                    >
+                      SIMULADOS
+                    </button>
+                  </Link>
                 )}
               </li>
               <li className="w-full md:w-[30%] flex justify-left ml-2 text-lg">
@@ -108,6 +132,36 @@ export default function Header({ isadmin }: isadmin) {
                   </button>
                 </Link>
               </li>
+              {/* Dropdown de Alunos (apenas para admin) */}
+              {isadmin && (
+                <li
+                  className="relative w-full md:w-[30%] flex justify-left ml-2 text-lg"
+                  onMouseEnter={() => handleMouseEnter('aluno')}
+                  onMouseLeave={() => handleMouseLeave('aluno')}
+                >
+                  <button
+                    className={`flex justify-center border-b-2 border-transparent transition duration-500 hover:border-b-white py-2 md:py-0 ${
+                      activePath.includes('aluno') ? 'font-bold border-b-white' : 'font-normal'
+                    }`}
+                  >
+                    ALUNO
+                  </button>
+                  {showAlunoDropdown && (
+                    <div 
+                      className="absolute top-full left-0 w-48 bg-teal-700 text-white shadow-md rounded-md mt-2"
+                      onMouseEnter={() => handleMouseEnter('aluno')} // Evita o fechamento ao entrar no dropdown
+                      onMouseLeave={() => handleMouseLeave('aluno')} // Fecha com atraso ao sair
+                    >
+                      <Link href="/visualizaralunos">
+                        <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-t-md cursor-pointer">VISUALIZAR ALUNOS</div>
+                      </Link>
+                      <Link href="/cadastraraluno">
+                        <div className="px-4 py-2 hover:bg-gray-400 hover:rounded-b-md cursor-pointer">CADASTRAR ALUNO</div>
+                      </Link>
+                    </div>
+                  )}
+                </li>
+              )}
             </ul>
           </div>
         </div>

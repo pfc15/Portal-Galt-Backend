@@ -12,7 +12,7 @@ export default function ButtonGalt({ onClick, text, svg }: ButtonProps) {
   return (
     <button
       onClick={onClick}
-      className="mt-5 tracking-wide font-semibold bg-main_color text-gray-100 w-full py-4 rounded-lg hover:bg-indigo-700 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
+      className="mt-5 tracking-wide font-semibold bg-teal-600 text-gray-100 w-full py-4 rounded-lg hover:bg-teal-800 transition-all duration-300 ease-in-out flex items-center justify-center focus:shadow-outline focus:outline-none"
     >
       
       {svg && (

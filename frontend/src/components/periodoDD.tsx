@@ -10,7 +10,7 @@ interface PeriodoDropdownProps {
 
 const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("select");
+  const [selected, setSelected] = useState("selecione");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [turmas, setTurmas] = useState<string[]>([])
   const [cookie, setCookie] = useCookies(["token_auth"]);

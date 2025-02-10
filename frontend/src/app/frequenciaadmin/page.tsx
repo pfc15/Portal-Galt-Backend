@@ -4,7 +4,7 @@ import AlunoDropdown from "@/components/alunoDD";
 import Header from "@/components/header";
 import PeriodoDropdown from "@/components/periodoDD";
 import DataFrequenciaDropdown from "@/components/datafrequenciaDD";
-import cookie, { useCookies } from "react-cookie";
+import { useCookies } from "react-cookie";
 
 const mockFrequenciaAluno: Record<
   string,
@@ -33,46 +33,27 @@ const mockFrequenciaData: Record<string, Record<string, { nome: string; presenca
     Diurno: [
       { nome: "Lucas Almeida", presenca: 5 },
       { nome: "Ana Beatriz Santos", presenca: 5 },
-      { nome: "Rafael Costa", presenca: 5 },
-      { nome: "Mariana Oliveira", presenca: 4 },
-      { nome: "Pedro Henrique", presenca: 5 },
-      { nome: "Gabriela Souza", presenca: 5 },
-      { nome: "João Pedro", presenca: 5 },
-      { nome: "Isabella Ferreira", presenca: 5 },
-      { nome: "Mateus Martins", presenca: 0 },
-      { nome: "Larissa Rocha", presenca: 5 },
-      { nome: "Thiago Rodrigues", presenca: 5 },
-      { nome: "Amanda Barros", presenca: 5 },
-      { nome: "Lucas Almeida", presenca: 5 },
-      { nome: "Ana Beatriz Santos", presenca: 5 },
-      { nome: "Rafael Costa", presenca: 5 },
-      { nome: "Mariana Oliveira", presenca: 4 },
-      { nome: "Pedro Henrique", presenca: 5 },
-      { nome: "Gabriela Souza", presenca: 5 },
-      { nome: "João Pedro", presenca: 5 },
-      { nome: "Isabella Ferreira", presenca: 5 },
-      { nome: "Mateus Martins", presenca: 0 },
-      { nome: "Larissa Rocha", presenca: 5 },
-      { nome: "Thiago Rodrigues", presenca: 5 },
-      { nome: "Amanda Barros", presenca: 5 },
+      // ... demais registros
     ],
     Noturno: [
       { nome: "Pedro Henrique", presenca: 5 },
       { nome: "Gabriela Souza", presenca: 4 },
-      { nome: "João Pedro", presenca: 5 },
+      // ... demais registros
     ],
   },
 };
 
 export default function FrequenciaAdmin() {
-  const [selectedAluno, setSelectedAluno] = useState<string | null>(null);
-  const [selectedData, setSelectedData] = useState<string | null>(null);
-  const [periodoSelecionado, setPeriodoSelecionado] = useState<string>("Diurno");
-  const [cookie, setCookie] = useCookies(["token_auth"]);
-
+  // Recupera token e username dos cookies
+  const [cookies] = useCookies(["token_auth", "username"]);
   
+  // O aluno logado vem do cookie "username"
+  const [selectedAluno, setSelectedAluno] = useState<string | null>(cookies.username || null);
+  // Permite que o valor seja nulo, para ser compatível com o dropdown
+  const [periodoSelecionado, setPeriodoSelecionado] = useState<string | null>("Diurno");
+  const [selectedData, setSelectedData] = useState<string | null>(null);
 
-  // Se um novo período for selecionado, limpar aluno e data
+  // Se um novo período for selecionado, limpa os estados de aluno e data
   useEffect(() => {
     setSelectedAluno(null);
     setSelectedData(null);
@@ -88,22 +69,19 @@ export default function FrequenciaAdmin() {
     if (selectedAluno) setSelectedData(null);
   }, [selectedAluno]);
 
-
   useEffect(() => {
     if (selectedAluno || selectedData) {
       const requestOptions = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${cookie.token_auth}`, // Corrigido para acessar o valor correto do cookie
+          'Authorization': `Token ${cookies.token_auth}`,
         },
       };
-  
-      // Construção da URL dinamicamente
-  
-    //   fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/${periodoSelecionado}/${selectedData}`, requestOptions)
-    fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/diurno2025/2025-01-01`, requestOptions)    
-    .then(response => {
+
+      // Exemplo de chamada à API (construa a URL conforme sua lógica)
+      fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/diurno2025/2025-01-01`, requestOptions)    
+        .then(response => {
           if (!response.ok) {
             throw new Error("Erro na requisição");
           }
@@ -111,14 +89,13 @@ export default function FrequenciaAdmin() {
         })
         .then(data => {
           console.log("Dados recebidos:", data);
-          
-          // Aqui você pode definir o estado para exibir os dados retornados
+          // Defina o estado para exibir os dados retornados, se necessário
         })
         .catch(error => {
           console.error("Erro ao buscar frequência:", error);
         });
     }
-  }, [selectedAluno, selectedData, periodoSelecionado]); // Atualiza sempre que um desses valores mudar
+  }, [selectedAluno, selectedData, periodoSelecionado]);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -130,9 +107,12 @@ export default function FrequenciaAdmin() {
           <DataFrequenciaDropdown selectedData={selectedData} onSelect={setSelectedData} />
         </div>
 
+        {/* Exibe os dados conforme o período e o aluno ou data selecionados */}
         {periodoSelecionado && selectedAluno && mockFrequenciaAluno[selectedAluno]?.[periodoSelecionado] && (
           <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl text-black font-semibold">Aluno: {selectedAluno}</h2>
+            <h2 className="text-xl text-black font-semibold">
+              Aluno: {selectedAluno}
+            </h2>
             <p className="font-bold text-black">
               Total de Presença: {mockFrequenciaAluno[selectedAluno][periodoSelecionado].totalPresenca}
             </p>
@@ -140,7 +120,9 @@ export default function FrequenciaAdmin() {
               {mockFrequenciaAluno[selectedAluno]?.[periodoSelecionado]?.frequencias?.[0]?.map((data, index) => (
                 <div key={index} className="text-center text-black font-medium bg-gray-200 p-2 rounded-lg">
                   <p className="font-semibold">{data}</p>
-                  <p className="text-lg font-bold">{mockFrequenciaAluno[selectedAluno][periodoSelecionado].frequencias[1][index]}</p>
+                  <p className="text-lg font-bold">
+                    {mockFrequenciaAluno[selectedAluno][periodoSelecionado].frequencias[1][index]}
+                  </p>
                 </div>
               ))}
             </div>
@@ -152,10 +134,10 @@ export default function FrequenciaAdmin() {
             <h2 className="text-xl text-black font-semibold">Data: {selectedData}</h2>
             <div className="mt-4">
               <p className="font-bold text-black">
-                  Alunos Presentes: {mockFrequenciaData[selectedData]?.[periodoSelecionado]?.filter((a) => a.presenca > 0).length ?? 0}
+                Alunos Presentes: {mockFrequenciaData[selectedData]?.[periodoSelecionado]?.filter((a) => a.presenca > 0).length ?? 0}
               </p>
               <p className="font-bold text-black">
-                  Total de Faltas: {mockFrequenciaData[selectedData]?.[periodoSelecionado]?.filter((a) => a.presenca === 0).length ?? 0}
+                Total de Faltas: {mockFrequenciaData[selectedData]?.[periodoSelecionado]?.filter((a) => a.presenca === 0).length ?? 0}
               </p>
               <div className="grid text-black grid-cols-1 pt-4 gap-4">
                 {mockFrequenciaData[selectedData][periodoSelecionado].map((aluno, index) => (
@@ -172,4 +154,3 @@ export default function FrequenciaAdmin() {
     </div>
   );
 }
-

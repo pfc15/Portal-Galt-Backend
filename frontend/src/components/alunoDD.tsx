@@ -10,7 +10,7 @@ interface AlunoDropdownProps {
   label?: string;
 }
 
-const mockAlunos = ["joana", "pedro", "felipe"];
+const mockAlunos = ["Joana", "Pedro", "Felipe", "Lucas Almeida"];
 export default function AlunoDropdown({ selectedAluno, onSelect, label = "Selecione um aluno:" }: AlunoDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");

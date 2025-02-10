@@ -4,14 +4,15 @@ import { useState, useRef, useEffect } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface PeriodoDropdownProps {
-  onSelect: (value: string) => void;
+  onSelect: (value: string | null) => void;
+  label?: string;
 }
 
-const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
+const PeriodoDropdown = ({ onSelect, label = "Selecione o período:" }: PeriodoDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("Diurno");
+  const [selected, setSelected] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  
+
   // Fecha o dropdown ao clicar fora
   useEffect(() => {
     function handleClickOutside(event: MouseEvent | TouchEvent) {
@@ -19,26 +20,26 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
         setIsOpen(false);
       }
     }
-  
+
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("touchstart", handleClickOutside);
-  
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("touchstart", handleClickOutside);
     };
   }, []);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (value: string | null) => {
     setSelected(value);
     setIsOpen(false);
-    onSelect(value); // Chama a função passada pelo pai
+    onSelect(value);
   };
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
       <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg">
-        Selecione o período:
+        {label}
       </span>
       <div className="relative">
         <button
@@ -47,13 +48,23 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
           style={{ backgroundColor: '#D9D9D9' }}
           type="button"
         >
-          {selected}
-          <ChevronDown className="w-4 h-4 ml-2 text-white"/>
+          <span className={selected === null ? "placeholder-custom" : ""}>
+            {selected === null ? "Escolha" : selected}
+          </span>
+          <ChevronDown className="w-4 h-4 ml-2 text-white" />
         </button>
 
         {isOpen && (
           <div className="absolute top-full left-0 w-full bg-gray-300 rounded-lg shadow-md mt-1">
             <ul className="text-black" style={{ backgroundColor: '#D9D9D9' }}>
+              <li>
+                <button
+                  onClick={() => handleSelect(null)}
+                  className="block w-full text-left px-4 py-2 hover:bg-[#EFEFEF]"
+                >
+                  Nenhum
+                </button>
+              </li>
               <li>
                 <button
                   onClick={() => handleSelect("Diurno")}
@@ -74,6 +85,12 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
           </div>
         )}
       </div>
+
+      <style jsx>{`
+        .placeholder-custom {
+          color: #9CA3AF; /* Cor cinza (equivalente ao gray-400 do Tailwind) */
+        }
+      `}</style>
     </div>
   );
 };

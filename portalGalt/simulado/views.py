@@ -17,7 +17,8 @@ from django.views.decorators.csrf import csrf_exempt
 @csrf_exempt
 @api_view(['POST'])
 def fileUpload(request):
-    corrigido = simuladoAanaliser(gabarito=request.data["gabarito"], respostas=request.data["respostas"], nome=request.data["nome"])
+    corrigido = simuladoAanaliser(gabarito=request.data["gabarito"], respostas=request.data["respostas"], nome=request.data["nome"]
+                                  , ano=request.data["ano"], mes=request.data["mes"], dia=request.data["dia"])
 
     return Response({"datail": "ok!"}, status=status.HTTP_201_CREATED)
 
@@ -46,7 +47,7 @@ def getListSimulados(request, aluno):
 def getSimulado(request, simuladoNome):
     print(simuladoNome)
     simulado = Simulado.objects.get(nome=simuladoNome)
-    return Response({"simulado":{"nome":simulado.nome}},status=status.HTTP_200_OK)
+    return Response({"simulado":{"nome":simulado.nome, "ano":simulado.ano, "mes":simulado.mes, "dia":simulado.dia}},status=status.HTTP_200_OK)
 
 
 @api_view(['GET'])
@@ -64,3 +65,11 @@ def getAllSimulado(request):
         lista["nome"] = retorno.copy()
     
     return Response({"simulado":lista},status=status.HTTP_200_OK)
+
+@csrf_exempt
+@api_view(['PUT'])
+def updateSimulado(request):
+    corrigido = simuladoAanaliser(gabarito=request.data["gabarito"], respostas=request.data["respostas"], nome=request.data["nome"],
+                                  ano=request.data["ano"],mes=request.data["mes"], dia=request.data["dia"], update=request.data["nome_antigo"])
+
+    return Response({"detail": "ok"}, status=status.HTTP_200_OK)

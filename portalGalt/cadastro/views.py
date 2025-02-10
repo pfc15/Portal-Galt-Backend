@@ -31,7 +31,7 @@ def login(request):
         return Response({"detail": "wrong username or password"}, status=status.HTTP_401_UNAUTHORIZED)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
-    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data})
+    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data, "username":request.data["username"]})
 
 
 @api_view(['POST'])

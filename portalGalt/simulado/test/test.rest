@@ -1,0 +1,30 @@
+POST http://localhost:8000/login/
+Content-Type: application/json
+
+{"username": "admin", "password":"1234"}
+
+###
+POST http://localhost:8000/simulado/upload/
+Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary
+
+------WebKitFormBoundary
+Content-Disposition: text/plain;name="nome"
+
+simulado1
+
+------WebKitFormBoundary
+Content-Disposition: form-data; name="gabarito"; filename="gabarito.csv"
+Content-Type: text/csv
+
+< ./gabarito.csv
+------WebKitFormBoundary
+Content-Disposition: form-data; name="respostas"; filename="resp_noturno_2025.csv"
+Content-Type: text/csv
+
+< ./resp_noturno_2025.csv
+------WebKitFormBoundary--
+
+###
+
+GET http://localhost:8000/simulado/getNota/

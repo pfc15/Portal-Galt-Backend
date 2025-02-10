@@ -34,8 +34,9 @@ export default function EnvioSimulado() {
       setErrorMessage("Por favor, preencha todos os campos antes de enviar.");
       return;
     }
+    const [dia, mes, ano] = dataSimulado.split("/").map(str => parseInt(str));
 
-    const payload = { nome: simuladoNome, data: dataSimulado, gabarito, respostas };
+    const payload = { nome: simuladoNome, dia:dia, mes:mes, ano:ano, gabarito, respostas };
     console.log("📤 Enviando payload:", payload);
 
     try {
@@ -44,7 +45,7 @@ export default function EnvioSimulado() {
         throw new Error("Token de autenticação não encontrado.");
       }
 
-      const response = await fetch("http://localhost:8000/simuladosAPI/enviarSimulado/", {
+      const response = await fetch("http://localhost:8000/simulado/upload/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

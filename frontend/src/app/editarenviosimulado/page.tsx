@@ -7,36 +7,45 @@ import SimuladoInput from "@/components/simuladoinput";
 import { useState, useEffect } from "react";
 import InputFileRespostas from "@/components/fileinputrespostas";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function EditarEnvioSimulado() {
+    const router = useRouter();
+    const searchParams = useSearchParams();
   const [simuladoNome, setSimuladoNome] = useState<string>("");
   const [dataSimulado, setDataSimulado] = useState<string>("");
   const [gabarito, setGabarito] = useState<Record<string, string>>({});
   const [respostas, setRespostas] = useState<Record<string, Record<string, string>>>({});
   const [cookies] = useCookies(["token_auth"]);
-  const router = useRouter();
-  const { id } = router.query;
+  const [nomeAntigo, setNomeAntigo] = useState<string>("");
 
   useEffect(() => {
-    if (id) {
-      fetch(`http://localhost:8000/simuladosAPI/obterSimulado/${id}/`)
-        .then((res) => res.json())
-        .then((data) => {
-          setSimuladoNome(data.nome);
-          setDataSimulado(data.data);
-          setGabarito(data.gabarito);
-          setRespostas(data.respostas);
+        let v = 'outro'
+      fetch(`http://localhost:8000/simulado/getSimulado/${v}/`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${cookies.token_auth}`,
+        },
+      })
+        .then((response) => {if (!response.ok) {
+            throw new Error("Erro na requisição");
+          }
+          return response.json();
+        }) .then(data => {
+            console.log(data);
+            setSimuladoNome(data.simulado.nome);
+            setNomeAntigo(data.simulado.nome);
+            setDataSimulado(`${data.simulado.dia}/${data.simulado.mes}/${data.simulado.ano}`)
         })
         .catch((error) => {
           console.error("Erro ao carregar simulado:", error);
           alert("Erro ao carregar simulado para edição.");
         });
-    }
-  }, [id]);
+    
+  }, []);
 
   const handleSubmit = async () => {
-    console.log("Editando Simulado ID:", id);
     console.log("Simulado Nome:", simuladoNome);
     console.log("Data Simulado:", dataSimulado);
     console.log("Gabarito:", gabarito);
@@ -47,9 +56,14 @@ export default function EditarEnvioSimulado() {
       return;
     }
 
+    const [dia, mes, ano] = dataSimulado.split("/").map(str => parseInt(str));
+
     const payload = {
       nome: simuladoNome,
-      data: dataSimulado,
+      nome_antigo: nomeAntigo,
+      ano: ano,
+      mes: mes,
+      dia: dia,
       gabarito,
       respostas,
     };
@@ -69,7 +83,7 @@ export default function EditarEnvioSimulado() {
         body: JSON.stringify(payload),
       };
 
-      const response = await fetch(`http://localhost:8000/simuladosAPI/editarSimulado/${id}/`, requestOptions);
+      const response = await fetch(`http://localhost:8000/simulado/editarSimulado/`, requestOptions);
 
       if (!response.ok) {
         throw new Error(`Erro ao editar simulado: ${response.statusText}`);

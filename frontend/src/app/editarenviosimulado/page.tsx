@@ -12,18 +12,15 @@ import { useRouter, useSearchParams } from "next/navigation";
 export default function EditarEnvioSimulado() {
     const router = useRouter();
     const searchParams = useSearchParams();
-  const [simuladoNome, setSimuladoNome] = useState<string>();
+  const [simuladoNome, setSimuladoNome] = useState<string>("");
   const [dataSimulado, setDataSimulado] = useState<string>("");
   const [gabarito, setGabarito] = useState<Record<string, string>>({});
   const [respostas, setRespostas] = useState<Record<string, Record<string, string>>>({});
   const [cookies] = useCookies(["token_auth"]);
-  
-
-  
-  const id = searchParams.get("simuladoNome"); // Obtém o ID da URL corretamente
+  const [nomeAntigo, setNomeAntigo] = useState<string>("");
 
   useEffect(() => {
-        let v = 'p1'
+        let v = 'outro'
       fetch(`http://localhost:8000/simulado/getSimulado/${v}/`,{
         method: "GET",
         headers: {
@@ -36,11 +33,10 @@ export default function EditarEnvioSimulado() {
           }
           return response.json();
         }) .then(data => {
-            console.log(data)
+            console.log(data);
             setSimuladoNome(data.simulado.nome);
-        //   setDataSimulado(data.simulado.data);
-        //   setGabarito(data.simulado.gabarito);
-        //   setRespostas(data.simulado.respostas);
+            setNomeAntigo(data.simulado.nome);
+            setDataSimulado(`${data.simulado.dia}/${data.simulado.mes}/${data.simulado.ano}`)
         })
         .catch((error) => {
           console.error("Erro ao carregar simulado:", error);
@@ -50,12 +46,6 @@ export default function EditarEnvioSimulado() {
   }, []);
 
   const handleSubmit = async () => {
-    if (!id) {
-      alert("ID do simulado não encontrado!");
-      return;
-    }
-
-    console.log("Editando Simulado ID:", id);
     console.log("Simulado Nome:", simuladoNome);
     console.log("Data Simulado:", dataSimulado);
     console.log("Gabarito:", gabarito);
@@ -66,9 +56,14 @@ export default function EditarEnvioSimulado() {
       return;
     }
 
+    const [dia, mes, ano] = dataSimulado.split("/").map(str => parseInt(str));
+
     const payload = {
       nome: simuladoNome,
-      data: dataSimulado,
+      nome_antigo: nomeAntigo,
+      ano: ano,
+      mes: mes,
+      dia: dia,
       gabarito,
       respostas,
     };
@@ -88,7 +83,7 @@ export default function EditarEnvioSimulado() {
         body: JSON.stringify(payload),
       };
 
-      const response = await fetch(`http://localhost:8000/simuladosAPI/editarSimulado/${id}/`, requestOptions);
+      const response = await fetch(`http://localhost:8000/simulado/editarSimulado/`, requestOptions);
 
       if (!response.ok) {
         throw new Error(`Erro ao editar simulado: ${response.statusText}`);

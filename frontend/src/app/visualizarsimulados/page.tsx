@@ -55,8 +55,9 @@ export default function VisualizarSimulado() {
       
         .then((res) => res.json())
         .then((data) => {
-            console.log(data)
-          setSimulados(data.simulado);
+            console.log(data.simulado, typeof(data.simulado))
+          setSimulados([data.simulado]);
+          console.log(simulados)
         })
         .catch((error) => {
           console.error("Erro ao carregar simulado:", error);
@@ -79,13 +80,46 @@ export default function VisualizarSimulado() {
     setSimuladoParaExcluir(simulado);
   };
 
-  const confirmDelete = () => {
-    if (simuladoParaExcluir) {
-      setSimulados(simulados.filter((s) => s.id !== simuladoParaExcluir.id));
+  const confirmDelete = async () => {
+    if (!simuladoParaExcluir) return;
+  
+    try {
+      const response = await fetch(
+        `http://localhost:8000/simulado/deleteSimulado/${simuladoParaExcluir.id}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Token ${cookies.token_auth}`,
+          },
+        }
+      );
+  
+      if (!response.ok) {
+        throw new Error("Erro ao excluir simulado");
+      }
+  
+      setSimulados((prevSimulados) =>
+        prevSimulados
+          .map((record) => {
+            const updatedRecord: Record<string, Simulado> = {};
+            Object.entries(record).forEach(([categoria, simulado]) => {
+              if (simulado.id !== simuladoParaExcluir.id) {
+                updatedRecord[categoria] = simulado;
+              }
+            });
+            return updatedRecord;
+          })
+          .filter((record) => Object.keys(record).length > 0)
+      );
+  
       setSimuladoParaExcluir(null);
+    } catch (error) {
+      console.error(error);
+      alert("Erro ao excluir simulado.");
     }
   };
-
+  
   return (
     <div className="flex flex-col bg-gray-100 items-center w-full min-h-screen">
       <Header isadmin />

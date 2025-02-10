@@ -5,7 +5,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:8000/frequenciaAPI/getFrequencia/pfc/
+GET http://localhost:8000/frequenciaAPI/getFrequencia/Lucas Oliveira/
 Content-Type: application/json
 Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
 

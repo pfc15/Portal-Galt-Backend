@@ -10,7 +10,7 @@ interface PeriodoDropdownProps {
 
 const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [selected, setSelected] = useState("select");
+  const [selected, setSelected] = useState("selecione");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [turmas, setTurmas] = useState<string[]>([])
   const [cookie, setCookie] = useCookies(["token_auth"]);
@@ -62,7 +62,7 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
-      <span className="bg-teal-500 text-black font-medium px-4 py-2 rounded-l-lg">
+      <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg">
         Selecione o período:
       </span>
       <div className="relative">
@@ -73,7 +73,7 @@ const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {
           type="button"
         >
           {selected}
-          <ChevronDown className="w-4 h-4 ml-2" />
+          <ChevronDown className="w-4 h-4 ml-2 text-white"/>
         </button>
 
         {isOpen && (

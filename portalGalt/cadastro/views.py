@@ -30,7 +30,7 @@ def login(request):
         return Response({"detail": "wrong username or password"}, status=status.HTTP_401_UNAUTHORIZED)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
-    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data})
+    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data, "username":request.data["username"]})
 
 
 @api_view(['POST'])
@@ -49,6 +49,8 @@ def signup(request):
             
 
             token = Token.objects.create(user=user)
+            
+
             return Response({"token":token.key, "username":user.username, "email":user.email, "role":user.groups.all()[0].name}, status=status.HTTP_200_OK)
         else:
             Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -11,7 +11,7 @@ export default function login() {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cookie, setCookie] = useCookies(["token_auth"]);
+  const [cookie, setCookie] = useCookies(["token_auth", "username"]);
   const router = useRouter();
   
 
@@ -42,6 +42,7 @@ export default function login() {
       const expiryDate = new Date();
       expiryDate.setMinutes(expiryDate.getMinutes() + 20160);
       setCookie("token_auth", data["token"], { path: "/", expires: expiryDate});
+      setCookie("username", data["username"], { path: "/", expires: expiryDate});
       console.log("Cookie set:", cookie);
       router.push("/home")
     })

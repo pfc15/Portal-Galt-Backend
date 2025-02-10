@@ -43,7 +43,7 @@ export default function FrequenciaAdmin() {
         },
       };
     if (selectedData) {
-      fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/${periodoSelecionado}/${selectedData.replaceAll("/", '-')}`, requestOptions)
+      fetch(`http://localhost:8000/frequenciaAPI/getFrequenciaTurma/${periodoSelecionado}/${selectedData.replaceAll("/", '-')}/`, requestOptions)
     .then(response => {
           if (!response.ok) {
             throw new Error("Erro na requisição");
@@ -93,7 +93,7 @@ function calculaPresenca(selectedAluno: string): number{
 
   return (
     <div className="min-h-screen bg-gray-100">
-      <Header />
+      <Header isadmin/>
       <div className="max-w-6xl mx-auto p-4 w-400">
         <div className="flex justify-evenly items-center gap-4 mb-4 mx-auto w-full">
           <PeriodoDropdown onSelect={setPeriodoSelecionado} />

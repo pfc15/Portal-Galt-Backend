@@ -4,14 +4,12 @@ import { useState, useRef, useEffect } from "react";
 import { FiSearch } from "react-icons/fi";
 import cookie, { useCookies } from "react-cookie";
 
-
-
-
 interface AlunoDropdownProps {
   selectedAluno: string | null;
   onSelect: (value: string | null) => void;
 }
 
+const mockAlunos = ["joana", "pedro", "felipe"];
 export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -36,8 +34,7 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
       ).then(data => {
             setAlunos(data["lista_usuario"])
             console.log(data["lista_usuario"])
-            console.log("DEU CEEEEERTO")
-      })    
+      })
     }, [cookie.token_auth]);
     
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -77,19 +74,19 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
 
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
-      <span className="bg-teal-500 text-black font-medium px-4 py-2 rounded-l-lg">
+      <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg">
         Selecione um aluno:
       </span>
       {/* Campo de busca */}
       <div className="relative">
         <div
-          className="flex items-center bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
+          className="flex items-center bg-teal-600 text-white p-2 rounded-r-lg cursor-pointer relative w-60"
           style={{ backgroundColor: '#D9D9D9' }}
           onClick={() => setIsOpen(!isOpen)}
         >
           <input
             type="text"
-            className="bg-transparent w-full text-black placeholder-black focus:outline-none"
+            className="bg-transparent w-full text-black placeholder-grey focus:outline-none"
             placeholder="Digite o nome de um aluno"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -103,8 +100,8 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
             className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
             style={{ backgroundColor: '#D9D9D9' }}
           >
-            {filteredAlunos.length > 0 ? (
-              filteredAlunos.map((aluno, index) => (
+            {alunos.length > 0 ? (
+              alunos.map((aluno, index) => (
                 <li
                   key={index}
                   className="p-2 hover:bg-[#EFEFEF] cursor-pointer"

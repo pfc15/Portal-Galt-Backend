@@ -7,10 +7,11 @@ import cookie, { useCookies } from "react-cookie";
 interface AlunoDropdownProps {
   selectedAluno: string | null;
   onSelect: (value: string | null) => void;
+  label?: string;
 }
 
 const mockAlunos = ["joana", "pedro", "felipe"];
-export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdownProps) {
+export default function AlunoDropdown({ selectedAluno, onSelect, label = "Selecione um aluno:" }: AlunoDropdownProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [cookie, setCookie] = useCookies(["token_auth"]);
@@ -75,7 +76,7 @@ export default function AlunoDropdown({ selectedAluno, onSelect }: AlunoDropdown
   return (
     <div className="relative inline-flex items-center" ref={dropdownRef}>
       <span className="bg-teal-600 text-white font-medium px-4 py-2 rounded-l-lg">
-        Selecione um aluno:
+        {label}
       </span>
       {/* Campo de busca */}
       <div className="relative">

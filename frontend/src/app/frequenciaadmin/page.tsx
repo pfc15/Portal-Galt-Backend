@@ -4,7 +4,7 @@ import AlunoDropdown from "@/components/alunoDD";
 import Header from "@/components/header";
 import PeriodoDropdown from "@/components/periodoDD";
 import DataFrequenciaDropdown from "@/components/datafrequenciaDD";
-import { useCookies } from "react-cookie";
+import cookie, { useCookies } from "react-cookie";
 
 
 export default function FrequenciaAdmin() {
@@ -12,8 +12,12 @@ export default function FrequenciaAdmin() {
   const [frequencia, setFrequencia] = useState<
   Record<string, { nome: string; presenca: number }[]>>({});
   const [selectedData, setSelectedData] = useState<string | null>(null);
+  const [periodoSelecionado, setPeriodoSelecionado] = useState<string>("Diurno");
+  const [cookie, setCookie] = useCookies(["token_auth"]);
 
-  // Se um novo período for selecionado, limpa os estados de aluno e data
+  
+
+  // Se um novo período for selecionado, limpar aluno e data
   useEffect(() => {
     setSelectedAluno(null);
     setSelectedData(null);
@@ -29,12 +33,13 @@ export default function FrequenciaAdmin() {
     if (selectedAluno) setSelectedData(null);
   }, [selectedAluno]);
 
+
   useEffect(() => {
     const requestOptions = {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Token ${cookies.token_auth}`,
+          'Authorization': `Token ${cookie.token_auth}`, // Corrigido para acessar o valor correto do cookie
         },
       };
     if (selectedData) {
@@ -98,9 +103,7 @@ function calculaPresenca(selectedAluno: string): number{
 
         {selectedAluno && frequencia && (
           <div className="bg-white p-4 rounded-lg shadow-md">
-            <h2 className="text-xl text-black font-semibold">
-              Aluno: {selectedAluno}
-            </h2>
+            <h2 className="text-xl text-black font-semibold">Aluno: {selectedAluno}</h2>
             <p className="font-bold text-black">
             Total de Presenca : {calculaPresenca(selectedAluno).toFixed(0)}%
             </p>
@@ -142,3 +145,4 @@ function calculaPresenca(selectedAluno: string): number{
     </div>
   );
 }
+

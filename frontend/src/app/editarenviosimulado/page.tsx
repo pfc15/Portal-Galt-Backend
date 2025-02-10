@@ -7,35 +7,54 @@ import SimuladoInput from "@/components/simuladoinput";
 import { useState, useEffect } from "react";
 import InputFileRespostas from "@/components/fileinputrespostas";
 import { useCookies } from "react-cookie";
-import { useRouter } from "next/router";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function EditarEnvioSimulado() {
-  const [simuladoNome, setSimuladoNome] = useState<string>("");
+    const router = useRouter();
+    const searchParams = useSearchParams();
+  const [simuladoNome, setSimuladoNome] = useState<string>();
   const [dataSimulado, setDataSimulado] = useState<string>("");
   const [gabarito, setGabarito] = useState<Record<string, string>>({});
   const [respostas, setRespostas] = useState<Record<string, Record<string, string>>>({});
   const [cookies] = useCookies(["token_auth"]);
-  const router = useRouter();
-  const { id } = router.query;
+  
+
+  
+  const id = searchParams.get("simuladoNome"); // Obtém o ID da URL corretamente
 
   useEffect(() => {
-    if (id) {
-      fetch(`http://localhost:8000/simuladosAPI/obterSimulado/${id}/`)
-        .then((res) => res.json())
-        .then((data) => {
-          setSimuladoNome(data.nome);
-          setDataSimulado(data.data);
-          setGabarito(data.gabarito);
-          setRespostas(data.respostas);
+        let v = 'p1'
+      fetch(`http://localhost:8000/simulado/getSimulado/${v}/`,{
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${cookies.token_auth}`,
+        },
+      })
+        .then((response) => {if (!response.ok) {
+            throw new Error("Erro na requisição");
+          }
+          return response.json();
+        }) .then(data => {
+            console.log(data)
+            setSimuladoNome(data.simulado.nome);
+        //   setDataSimulado(data.simulado.data);
+        //   setGabarito(data.simulado.gabarito);
+        //   setRespostas(data.simulado.respostas);
         })
         .catch((error) => {
           console.error("Erro ao carregar simulado:", error);
           alert("Erro ao carregar simulado para edição.");
         });
-    }
-  }, [id]);
+    
+  }, []);
 
   const handleSubmit = async () => {
+    if (!id) {
+      alert("ID do simulado não encontrado!");
+      return;
+    }
+
     console.log("Editando Simulado ID:", id);
     console.log("Simulado Nome:", simuladoNome);
     console.log("Data Simulado:", dataSimulado);

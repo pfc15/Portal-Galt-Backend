@@ -44,7 +44,7 @@ export default function EnvioSimulado() {
         throw new Error("Token de autenticação não encontrado.");
       }
 
-      const response = await fetch("http://localhost:8000/simuladosAPI/enviarSimulado/", {
+      const response = await fetch("http://localhost:8000/simulado/upload/", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

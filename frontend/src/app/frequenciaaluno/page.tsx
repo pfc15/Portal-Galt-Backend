@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
 import Header from "@/components/header";
+import { useState, useEffect } from "react";
+import { useCookies } from "react-cookie";
 
 const mockFrequenciaAluno = {
   "Lucas Almeida": {
@@ -31,9 +32,36 @@ const mockFrequenciaAluno = {
 
 export default function FrequenciaAluno() {
     const selectedAluno = "Lucas Almeida";
-    const frequencias = mockFrequenciaAluno[selectedAluno].Diurno.frequencias;
-    const totalPresenca = mockFrequenciaAluno[selectedAluno].Diurno.totalPresenca;
-  
+    // const frequencias = mockFrequenciaAluno[selectedAluno].Diurno.frequencias;
+    // const totalPresenca = mockFrequenciaAluno[selectedAluno].Diurno.totalPresenca;
+    const [frequencias, setFrequencia] = useState();
+    const [totalPresenca, setTotalPresenca] = useState();
+    const [cookies] = useCookies(["token_auth"]);
+
+
+    useEffect(()=>{
+        fetch(`http://localhost:8000/simulado/getFrequencia/${selectedAluno}/`,{
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Token ${cookies.token_auth}`,
+            },
+          })
+            .then((response) => {if (!response.ok) {
+                throw new Error("Erro na requisição");
+              }
+              return response.json();
+            }) .then(data => {
+                console.log(data)
+                setFrequencia(data.presenca);
+            })
+            .catch((error) => {
+              console.error("Erro ao carregar simulado:", error);
+              alert("Erro ao carregar simulado para edição.");
+            });
+    }, [])
+
+
     return (
       <div className="min-h-screen bg-white">
         <Header />

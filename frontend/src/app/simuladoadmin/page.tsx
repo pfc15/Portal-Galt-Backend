@@ -28,16 +28,18 @@ export default function SimuladosAdmin() {
     useEffect(() => {
         const fetchSimulados = async () => {
             try {
-                const response = await fetch("http://localhost:8000/simulado/getListSimulados/", {
+                const response = await fetch("http://localhost:8000/simulado/getListSimulados/null", {
                     method: "GET",
                     headers: {
-                        "Authorization": Token ${cookie.token_auth},
+                        "Authorization": `Token ${cookie.token_auth}`,
                     },
                 });
 
                 if (!response.ok) throw new Error("Erro na requisição");
                 const data = await response.json();
+                console.log(`${JSON.stringify(data.lista_simulados)}`)
                 setSimulados(data.lista_simulados);
+                
             } catch (error) {
                 console.error("Erro ao buscar simulados:", error);
             }
@@ -45,6 +47,10 @@ export default function SimuladosAdmin() {
 
         fetchSimulados();
     }, []);
+
+    useEffect( () => {
+        console.log(simulados)
+    }, [simulados])
 
     const getFilteredResults = () => {
         if (selectedSimulado && selectedAluno) {
@@ -67,7 +73,7 @@ export default function SimuladosAdmin() {
 
     const filteredResults = getFilteredResults();
 
-    const calculaNota = (resultados: Record<string, boolean>) => Object.values(resultados).filter(Boolean).length;
+    const calculaNota = (resultados: Record<string, boolean>) => Object.values(resultados).filter(value=> value===true).length;
     const totalQuestoes = (resultados: Record<string, boolean>) => Object.keys(resultados).length;
 
     return (
@@ -76,7 +82,7 @@ export default function SimuladosAdmin() {
             <div className="max-w-6xl mx-auto p-4">
                 <div className="flex justify-center gap-4 mb-4">
                     <AlunoSimuladoDD selectedAluno={selectedAluno} onSelect={setSelectedAluno} />
-                    <SimuladoDropdownAdm simulados={mockSimulados} selectedSimulado={selectedSimulado} onSelect={setSelectedSimulado} />
+                    <SimuladoDropdownAdm simulados={simulados} selectedSimulado={selectedSimulado} onSelect={setSelectedSimulado} />
                 </div>
 
                 {filteredResults ? (

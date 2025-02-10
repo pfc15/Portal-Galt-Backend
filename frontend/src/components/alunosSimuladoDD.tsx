@@ -95,8 +95,8 @@ export default function AlunoSimuladoDD({ selectedAluno, onSelect }: AlunoDropdo
                         className="absolute w-full text-black bg-gray-300 rounded max-h-96 overflow-y-auto mt-1 shadow-lg"
                         style={{ backgroundColor: '#D9D9D9' }}
                     >
-                        {mockAlunos.length > 0 ? (
-                            mockAlunos.map((aluno, index) => (
+                        {alunos.length > 0 ? (
+                            alunos.map((aluno, index) => (
                                 <li
                                     key={index}
                                     className="p-2 hover:bg-[#EFEFEF] cursor-pointer"

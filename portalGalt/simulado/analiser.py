@@ -26,6 +26,7 @@ class simuladoAanaliser():
         notas = {}
         for aluno, re in respostas.items():
             acertos = sum(1 for questao, r in re.items() if r == gabarito.get(questao))
+            respostas[aluno] = [True if r == gabarito.get(questao) else False for questao, r in re.items()]
             notas[aluno] = acertos  # Nota é o número de acertos
         return notas
 

@@ -8,6 +8,9 @@ class Simulado(models.Model):
     path_respostas = models.CharField(max_length=10000)
     path_gabarito = models.CharField(max_length=5000)
     quant_questoes = models.IntegerField()
+    dia = models.IntegerField(null=True)
+    mes = models.IntegerField(null=True)
+    ano = models.IntegerField(null=True)
 
     def __string__(self):
         return self.nome

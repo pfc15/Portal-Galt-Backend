@@ -6,5 +6,8 @@ from .views import *
 urlpatterns = [
     path('upload/', fileUpload),
     # path('getNota/<str:aluno>/<str:simuladoNome>/', getNota),
-    path('getListSimulados/<str:aluno>', getListSimulados)
+    path('getListSimulados/<str:aluno>/', getListSimulados),
+    path('getSimulado/<str:simuladoNome>/', getSimulado),
+    path('getAllSimulado/', getAllSimulado)
+
 ]

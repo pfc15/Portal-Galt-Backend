@@ -7,6 +7,7 @@ from rest_framework import status
 from .serializers import FileUploadSerializer
 from .analiser import simuladoAanaliser
 from .models import *
+import json
 
 from django.contrib.auth.models import Group, User
 from django.views.decorators.csrf import csrf_exempt
@@ -30,7 +31,7 @@ def getListSimulados(request, aluno):
             retorno[s.nome] = {}
             notas = Nota.objects.filter(simulado=s)
             for n in notas:
-                retorno[s.nome][n.aluno.username] = n.questoes
+                retorno[s.nome][n.aluno.username] = json.loads(n.questoes)
         return Response({"lista_simulados":retorno}, status=status.HTTP_200_OK)
     else:
         alunos = Nota.objects.filter(aluno=aluno)
@@ -39,3 +40,27 @@ def getListSimulados(request, aluno):
             s = Simulado.objects.get(a.simulado).nome
             retorno[s.nome] = {a.aluno.username:a.questoes}
         return Response({"lista_simulados":simulados}, status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getSimulado(request, simuladoNome):
+    print(simuladoNome)
+    simulado = Simulado.objects.get(nome=simuladoNome)
+    return Response({"simulado":{"nome":simulado.nome}},status=status.HTTP_200_OK)
+
+
+@api_view(['GET'])
+def getAllSimulado(request):
+
+    simulados = Simulado.objects.all()
+    lista = {}
+    
+    for s in simulados:
+        retorno = {}
+        retorno["nome"] = s.nome
+        retorno["data"] = f"{s.ano}-{s.mes}-{s.dia}"
+        retorno["gabarito"] = ""
+        retorno["respostas"] = ""
+        lista["nome"] = retorno.copy()
+    
+    return Response({"simulado":lista},status=status.HTTP_200_OK)

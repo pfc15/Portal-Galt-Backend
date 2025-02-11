@@ -79,13 +79,13 @@ export default function EnvioSimulado() {
       <div className="grid grid-cols-2 gap-4 w-3/4 max-w-xl mt-6">
         <div className="flex flex-col items-center">
           <InputFile id="gabarito_input" label="Faça o upload do gabarito" setGabarito={setGabarito} />
-          <button className="flex items-center gap-2 mt-2 text-gray-500 hover:underline" onClick={() => handleDownload("gabarito_exemplo.csv", "questao,resposta\n1,A\n2,B\n3,C")}>
+          <button className="flex items-center gap-2 mt-2 text-gray-500 hover:underline" onClick={() => handleDownload("gabarito_exemplo.csv", "questao;gabarito\n1;A\n2;B\n3;C")}>
             <Download size={18} /> Baixar exemplo de arquivo
           </button>
         </div>
         <div className="flex flex-col items-center">
           <InputFileRespostas id="respostas_input" label="Faça o upload das respostas dos alunos" setGabarito={setRespostas} />
-          <button className="flex items-center gap-2 mt-2 text-gray-500 hover:underline" onClick={() => handleDownload("respostas_exemplo.csv", "aluno,questao1,questao2\nJoao,C,E\nMaria,C,C\nPedro,E,C")}>
+          <button className="flex items-center gap-2 mt-2 text-gray-500 hover:underline" onClick={() => handleDownload("respostas_exemplo.csv", "aluno;questao1;questao2\nJoao;C;E\nMaria;C;C\nPedro;E;C")}>
             <Download size={18} /> Baixar exemplo de arquivo
           </button>
         </div>

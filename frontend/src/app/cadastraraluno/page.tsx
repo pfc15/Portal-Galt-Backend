@@ -76,7 +76,7 @@ export default function CadastroPage() {
 
   return (
     <div>
-      <Header />
+      <Header isadmin />
       <div className="min-h-screen bg-gray-100 text-gray-900 flex justify-center">
         <div className="bg-white shadow sm:rounded-lg flex justify-center flex-1 p-6">
           <div className="lg:w-2/3 xl:w-1/2 p-6 sm:p-8">

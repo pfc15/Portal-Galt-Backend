@@ -20,4 +20,11 @@ Authorization: Token ca4a495d7c7ea194135aee8ac15814e8bd86692a
 {}
 
 ###
+POST http://localhost:8000/delete/
+Content-Type: application/json
+Authorization: Token 2c7773c7575c2dc8c955328b0217174e287d5833
+
+{"username": "pfc"}
+
+###
 

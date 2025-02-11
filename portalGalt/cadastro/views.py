@@ -20,6 +20,8 @@ from django.shortcuts import get_object_or_404
 #decorators
 from .decorators import allowed_roles
 from rest_framework.decorators import authentication_classes, permission_classes
+from django.views.decorators.csrf import csrf_exempt
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 
@@ -31,7 +33,8 @@ def login(request):
         return Response({"detail": "wrong username or password"}, status=status.HTTP_401_UNAUTHORIZED)
     token, created = Token.objects.get_or_create(user=user)
     serializer = UserSerializer(instance=user)
-    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data, "username":request.data["username"]})
+    return Response({'msg':'loginrealizado com sucesso!',"token":token.key, "user":serializer.data, "username":request.data["username"],
+                      "role":user.groups.all()[0].name})
 
 
 @api_view(['POST'])
@@ -68,7 +71,7 @@ def signup(request):
         
         user = serializer.save()
         user.set_password(user_data['password'])
-        user.groups.add(Group.objects.get(name="Student"))
+        user.groups.add(Group.objects.get(name="student"))
         
         # Cria UserProfile e loga detalhes
         user_profile = UserProfile.objects.create(user=user, turma=turma)
@@ -86,6 +89,15 @@ def signup(request):
     except Exception as e:
         print("🔥 Erro crítico:", str(e))  # Log detalhado
         return Response({"detail": "Erro interno"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+@csrf_exempt
+@api_view(['POST'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+@permission_classes([IsAuthenticated])
+def deleteConta(request):
+    user = User.objects.get(username=request.data["username"])
+    user.delete()
+    return Response(f"passed for {request.user.email}, role for this user {request.user.groups.all()[0].name}")
 
 @api_view(['GET'])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

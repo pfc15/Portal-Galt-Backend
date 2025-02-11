@@ -35,11 +35,15 @@ def getListSimulados(request, aluno):
                 retorno[s.nome][n.aluno.username] = json.loads(n.questoes)
         return Response({"lista_simulados":retorno}, status=status.HTTP_200_OK)
     else:
-        alunos = Nota.objects.filter(aluno=aluno)
+        user = User.objects.get(username=aluno)
+        alunos = Nota.objects.filter(aluno=user)
         simulados = {}
         for a in alunos:
-            s = Simulado.objects.get(a.simulado).nome
-            retorno[s.nome] = {a.aluno.username:a.questoes}
+            s = a.simulado.nome
+            dic = {}
+            dic[a.aluno.username] = a.questoes
+            simulados[s] = dic.copy()
+
         return Response({"lista_simulados":simulados}, status=status.HTTP_200_OK)
 
 
@@ -54,7 +58,7 @@ def getSimulado(request, simuladoNome):
 def getAllSimulado(request):
 
     simulados = Simulado.objects.all()
-    lista = {}
+    lista = []
     
     for s in simulados:
         retorno = {}
@@ -62,7 +66,7 @@ def getAllSimulado(request):
         retorno["data"] = f"{s.ano}-{s.mes}-{s.dia}"
         retorno["gabarito"] = ""
         retorno["respostas"] = ""
-        lista["nome"] = retorno.copy()
+        lista.append(retorno.copy())
     
     return Response({"simulado":lista},status=status.HTTP_200_OK)
 

@@ -13,6 +13,7 @@ from rest_framework.decorators import authentication_classes, permission_classes
 
 
 from django.shortcuts import get_object_or_404
+from django.views.decorators.csrf import csrf_exempt
 
 
 AULAS_POR_DIA = 5
@@ -76,6 +77,26 @@ def getListaAlunos(request):
 
         return Response({"lista_usuario":lista_usuario}, status=status.HTTP_200_OK)
     return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
+
+@csrf_exempt
+@api_view(['GET'])
+@authentication_classes([SessionAuthentication, TokenAuthentication])
+def getListaAlunosComplete(request):
+    if request.user.groups.all()[0].name == 'Administrator':
+        usuarios = User.objects.filter(groups=Group.objects.get(name="student"))
+        lista_usuario = []
+        for user in usuarios:
+            dic = {}
+            dic["nome"] = user.username
+            dic["email"] = user.email
+            profile = UserProfile.objects.get(user=user)
+            dic["turma"] = profile.turma.nome
+            lista_usuario.append(dic.copy())
+        
+
+        return Response({"lista_usuario":lista_usuario}, status=status.HTTP_200_OK)
+    return Response({'deatil': 'does not have permission to acess this information'}, status=status.HTTP_401_UNAUTHORIZED)
+
 
 @api_view(["GET"])
 @authentication_classes([SessionAuthentication, TokenAuthentication])

@@ -6,32 +6,17 @@ import { useCookies } from "react-cookie";
 import SimuladoDropdownAdm from "@/components/simuladosDDadm";
 import { ResponsiveContainer, LineChart, XAxis, YAxis, Tooltip, Line } from "recharts";
 
-const mockSimulados: Record<string, Record<string, Record<string, boolean>>> = {
-    "Simulado 1": {
-        "Lucas Oliveira": { "q1": false, "q2": true, "q3": false, "q4": true, "q5": false, "q6": true, "q7": false, "q8": true, "q9": false, "q10": true, "q11": false, "q12": true },
-    },
-    "Simulado 2": {
-        "Lucas Oliveira": { "q1": true, "q2": true, "q3": true, "q4": false, "q5": true, "q6": true, "q7": true, "q8": false, "q9": true, "q10": false, "q11": true, "q12": false },
-    },
-    "Simulado 3": {
-        "Lucas Oliveira": { "q1": false, "q2": false, "q3": false, "q4": false, "q5": false, "q6": false, "q7": false, "q8": false, "q9": true, "q10": false, "q11": true, "q12": false },
-    },
-    "Simulado 4": {
-        "Lucas Oliveira": { "q1": true, "q2": true, "q3": true, "q4": true, "q5": true, "q6": true, "q7": true, "q8": true, "q9": true, "q10": true, "q11": true, "q12": true, "q13": false },
-    }
-};
-
 
 
 export default function SimuladosAluno() {
     const [selectedSimulado, setSelectedSimulado] = useState<string | null>(null);
-    const [simulados, setSimulados] = useState(mockSimulados);
-    const [cookie, setCookie] = useCookies(["token_auth"]);
-    const [selectedAluno, setSelectedAluno] = useState("Lucas Oliveira");
-
+    const [simulados, setSimulados] = useState<Record<string, Record<string, Record<string, boolean>>>>({});
+    const [cookie, setCookie] = useCookies(["token_auth", "username"]);
+    const selectedAluno = cookie.username;
+    
     useEffect(() => {
         if (!cookie.token_auth) return;
-
+        // setSelectedAluno(cookie.username)
         const fetchSimulados = async () => {
             try {
                 const response = await fetch(`http://localhost:8000/simulado/getListSimulados/${selectedAluno}`, {
@@ -67,7 +52,9 @@ export default function SimuladosAluno() {
 
     const dadosGrafico = processarDadosGrafico(simulados, selectedAluno);
     return (
+        
         <main className="min-h-screen w-full bg-gray-100">
+            
             <Header />
             <div className="w-[90%] mx-auto p-4">
                 <div className="flex justify-center gap-4 mb-4">

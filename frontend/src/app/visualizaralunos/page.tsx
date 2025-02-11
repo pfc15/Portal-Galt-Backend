@@ -7,6 +7,12 @@ import AlunoFiltro from "@/components/alunofiltro";
 import { Settings, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+
+interface user{
+    nome: string,
+    email:string,
+    turma: string
+}
 // Lista mockada de alunos
 const mockAlunos = [
   { nome: "Lucas", email: "lucas@example.com", turma: "Diurno2025" },
@@ -26,9 +32,60 @@ export default function VisualizarAlunos() {
   const [alunosFiltrados, setAlunosFiltrados] = useState(mockAlunos);
   const [alunoParaExcluir, setAlunoParaExcluir] = useState<string | null>(null);
   const router = useRouter();
+  const [ alunos, setAlunos] = useState<user[]>([])
+
+  useEffect(()=>{
+    const requestOptions = {
+        method: 'GET',
+        headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Token ${cookie.token_auth}`
+        }
+    };
+  fetch("http://localhost:8000/frequenciaAPI/getAllstudentsComplete/", requestOptions).then(
+    response => {
+      if (!response.ok) {
+        throw new Error('Network not ok')
+      }
+      return response.json()
+    }
+  ).then(data => {
+        setAlunos(data["lista_usuario"])
+        console.log(data["lista_usuario"])
+  })
+  }, [])
+
+//   useEffect(() =>{
+//     if (alunoParaExcluir!=null){
+//         const data = {
+//             username: alunoParaExcluir,
+//           };
+//         const requestOptions = {
+//             method: 'POST',
+//             headers: {
+//             'Content-Type': 'application/json',
+//             'Authorization': `Token ${cookie.token_auth}`
+//             },
+//             body: JSON.stringify(data),
+//         };
+//       fetch(`http://localhost:8000/delete/`, requestOptions).then(
+//         response => {
+//           if (!response.ok) {
+//             throw new Error('Network not ok')
+//           }
+//           return response.json()
+//         }
+//       ).then(data => {
+//             console.log("consegui deletar!")
+//       })
+//     }
+    
+//   }, [alunoParaExcluir])
+    
+
 
   useEffect(() => {
-    let alunosFiltrados = mockAlunos;
+    let alunosFiltrados = alunos;
 
     if (periodoSelecionado) {
       alunosFiltrados = alunosFiltrados.filter(

@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 
 
 class Turma(models.Model):
-    nome=models.TextField()
+    nome = models.TextField()
     ano = models.IntegerField()
 
     class Meta:

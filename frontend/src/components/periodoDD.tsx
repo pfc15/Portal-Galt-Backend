@@ -6,6 +6,7 @@ import cookie, { useCookies } from "react-cookie";
 
 interface PeriodoDropdownProps {
   onSelect: (value: string) => void;
+  label?: string;
 }
 
 const PeriodoDropdown = ({ onSelect }: PeriodoDropdownProps) => {

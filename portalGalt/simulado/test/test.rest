@@ -27,4 +27,4 @@ Content-Type: text/csv
 
 ###
 
-GET http://localhost:8000/simulado/getNota/
+GET http://localhost:8000/simulado/getAllSimulado/
